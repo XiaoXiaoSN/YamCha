@@ -2,14 +2,10 @@ language: go
 go:
   - '1.13'
   - tip
-sudo: false
 
 install:
   - go get golang.org/x/lint/golint
 
 script:
-  - bash script/codecov.sh
   - golint --set_exit_status ./...
-
-after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - go test ./...
