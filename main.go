@@ -26,6 +26,9 @@ func main() {
 	log.Println("Channel Token:", channelToken)
 
 	//BOT APIs
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte("hello world"))
+	})
 	http.HandleFunc("/callback", callbackHandler)
 
 	//provide by Heroku
