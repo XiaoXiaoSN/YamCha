@@ -10,11 +10,10 @@ import (
 )
 
 var bot *linebot.Client
-var serverURL string
 
 func main() {
 	var err error
-	serverURL = os.Getenv("LINECORP_PLATFORM_CHANNEL_SERVERURL")
+	// serverURL := os.Getenv("LINECORP_PLATFORM_CHANNEL_SERVERURL")
 	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
 	if bot, err = linebot.New(channelSecret, channelToken); err != nil {
@@ -25,14 +24,17 @@ func main() {
 	log.Println("Channel Secret:", channelSecret)
 	log.Println("Channel Token:", channelToken)
 
-	//BOT APIs
+	// BOT APIs
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello world"))
 	})
 	http.HandleFunc("/callback", callbackHandler)
 
-	//provide by Heroku
+	// provide by Heroku
 	port := os.Getenv("PORT")
 	addr := fmt.Sprintf(":%s", port)
-	http.ListenAndServe(addr, nil)
+	fmt.Printf("Http Service run at port %s\n", addr)
+	if err = http.ListenAndServe(addr, nil); err != nil {
+		log.Println("End Http Service...")
+	}
 }

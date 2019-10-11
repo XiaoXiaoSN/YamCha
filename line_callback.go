@@ -9,7 +9,7 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
-//LinkCustomer : A chatbot DB to store account link information.
+// LinkCustomer : A chatbot DB to store account link information.
 type LinkCustomer struct {
 	//Data from CustData from provider.
 	Name   string
@@ -23,10 +23,11 @@ type LinkCustomer struct {
 var linkedCustomers []LinkCustomer
 
 func callbackHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("webhook be triggered")
 	events, err := bot.ParseRequest(r)
 	if err != nil {
 		if err == linebot.ErrInvalidSignature {
-			w.WriteHeader(400)
+			w.WriteHeader(401)
 		} else {
 			w.WriteHeader(500)
 		}
@@ -46,11 +47,16 @@ func callbackHandler(w http.ResponseWriter, r *http.Request) {
 					res, err := bot.GetNumberMulticastMessages(date).Do()
 					fmt.Println(res, err)
 					return
+				default:
+					// default just echo message
+					_, err := bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("echo: "+message.Text)).Do()
+					if err != nil {
+						log.Println("err:", err)
+					}
 				}
 			}
-
-		} else if event.Type == linebot.EventTypeAccountLink {
-			log.Println("event.Type == linebot.EventTypeAccountLink")
+		} else {
+			log.Println("event.Type == " + linebot.EventTypeMessage)
 		}
 	}
 }
