@@ -1,6 +1,7 @@
 package linebot
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -10,6 +11,17 @@ import (
 	"github.com/line/line-bot-sdk-go/linebot"
 )
 
+// define yamcha const
+const (
+	StatusYamchaSeelp  int = 0
+	StatusYamchaWakeUp int = 1
+)
+
+var (
+	// ErrUnknow define a Unknow Error
+	ErrUnknow = errors.New("Unknow Error")
+)
+
 // LineBot define basic line bot interface
 type LineBot interface {
 	CallbackHandle(http.ResponseWriter, *http.Request)
@@ -17,7 +29,7 @@ type LineBot interface {
 
 // YamchaLineBot app
 type YamchaLineBot struct {
-	storage storage.Storage
+	Storage storage.Storage
 	bot     *linebot.Client
 }
 
@@ -32,7 +44,7 @@ func NewYambotLineBot(channelSecret, channelToken string, storage storage.Storag
 	log.Println("Channel Token:", channelToken)
 
 	return &YamchaLineBot{
-		storage: storage,
+		Storage: storage,
 		bot:     bot,
 	}, nil
 }
