@@ -70,10 +70,10 @@ func (app *YamchaLineBot) CallbackHandle(w http.ResponseWriter, r *http.Request)
 				if err := app.handleText(message, event.ReplyToken, event.Source); err != nil {
 					log.Print(err)
 				}
-			case *linebot.StickerMessage:
-				if err := app.replyText(event.ReplyToken, "我...我看不懂貼圖 QQ"); err != nil {
-					log.Print(err)
-				}
+			// case *linebot.StickerMessage:
+			// 	if err := app.replyText(event.ReplyToken, "我...我看不懂貼圖 QQ"); err != nil {
+			// 		log.Print(err)
+			// 	}
 			default:
 				log.Printf("Unknown message: %v", message)
 			}

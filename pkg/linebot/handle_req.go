@@ -10,18 +10,34 @@ func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken st
 	switch message.Text {
 	// wake up yamcha!
 	case "yamcha", "Yamcha", "飲茶":
+		log.Println("reply token:", replyToken)
 		_ = app.wekeUp(message, replyToken, source)
+		// if _, err := app.bot.ReplyMessage(
+		// 	replyToken,
+		// 	linebot.NewTextMessage("echo: "+message.Text),
+		// ).Do(); err != nil {
+		// 	return err
+		// }
 
-	default:
-		log.Printf("Echo message to %s: %s", replyToken, message.Text)
+		// default:
+		// 	log.Printf("Echo message to %s: %s", replyToken, message.Text)
+		// 	if _, err := app.bot.ReplyMessage(
+		// 		replyToken,
+		// 		linebot.NewTextMessage("echo: "+message.Text),
+		// 	).Do(); err != nil {
+		// 		return err
+		// 	}
+
+	case "成功了！":
 		if _, err := app.bot.ReplyMessage(
 			replyToken,
-			linebot.NewTextMessage("echo: "+message.Text),
+			linebot.NewTextMessage("哇嗚你好厲害"),
 		).Do(); err != nil {
 			return err
 		}
 	}
 	return nil
+
 }
 
 func (app *YamchaLineBot) handleSticker(message *linebot.StickerMessage, replyToken string) error {
@@ -43,10 +59,14 @@ func (app *YamchaLineBot) wekeUp(message *linebot.TextMessage, replyToken string
 		if err != nil {
 			return err
 		}
-
-		if err := app.replyText(replyToken, "嘿！ 今天想喝點什麼?"); err != nil {
+		// beta: return menu
+		if err := app.replyFlex(replyToken, "嘿！ 今天想喝點什麼?"); err != nil {
 			return err
 		}
+		// end beta
+		// if err := app.replyText(replyToken, "嘿！ 今天想喝點什麼?"); err != nil {
+		// 	return err
+		// }
 	} else if value == StatusYamchaWakeUp {
 		err := app.Storage.Set(source.GroupID+"Status", 1)
 		if err != nil {

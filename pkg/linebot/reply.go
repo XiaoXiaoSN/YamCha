@@ -12,6 +12,95 @@ const (
 	ConfirmMessageNo  = "不要!"
 )
 
+var initJsonData = []byte(`{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover",
+    "action": {
+      "type": "uri",
+      "uri": "http://linecorp.com/"
+    }
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "飲茶 ver.0.0.1 beta",
+        "weight": "bold",
+        "size": "xl"
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "新增訂單",
+          "uri": "line://app/1653300700-EjDoldvQ"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "查詢訂單",
+          "uri": "https://linecorp.com"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "刪除訂單",
+          "uri": "https://www.google.com"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "首頁介紹",
+          "uri": "line://app/1653300700-RVyln9oB/?hashpath=%23%2F"
+        }
+      },
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "查詢菜單",
+          "uri": "line://app/1653300700-ydEGLgZR"
+        }
+      },
+      {
+        "type": "spacer",
+        "size": "sm"
+      }
+    ],
+    "flex": 0
+  }
+}`)
+
 // TODO: 允許複數個 text
 func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	if _, err := app.bot.ReplyMessage(
@@ -20,6 +109,23 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	).Do(); err != nil {
 		log.Println("reply text err:", err)
 		return err
+	}
+	return nil
+}
+
+func (app *YamchaLineBot) replyFlex(replyToken, text string) error {
+	log.Println("reply token in replyFlex:", replyToken)
+	if container, err := linebot.UnmarshalFlexMessageJSON(initJsonData); err != nil {
+		log.Println("err:", err)
+
+		return err
+	} else if _, errorMsg := app.bot.ReplyMessage(
+		replyToken,
+		linebot.NewFlexMessage("alt message", container),
+	).Do(); errorMsg != nil {
+		log.Println("reply token:", replyToken)
+		log.Println("reply text err:", errorMsg)
+		return errorMsg
 	}
 	return nil
 }
