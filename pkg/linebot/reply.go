@@ -1,9 +1,8 @@
 package linebot
 
 import (
-	"log"
-
 	"github.com/line/line-bot-sdk-go/linebot"
+	log "github.com/sirupsen/logrus"
 )
 
 // define reply const content

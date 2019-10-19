@@ -1,16 +1,15 @@
 package linebot
 
 import (
-	"log"
-
 	"github.com/line/line-bot-sdk-go/linebot"
+	log "github.com/sirupsen/logrus"
 )
 
 func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
 	switch message.Text {
 	// wake up yamcha!
 	case "yamcha", "Yamcha", "飲茶":
-		log.Println("reply token:", replyToken)
+		log.Info("reply token:", replyToken)
 		_ = app.wekeUp(message, replyToken, source)
 		// if _, err := app.bot.ReplyMessage(
 		// 	replyToken,

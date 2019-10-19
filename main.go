@@ -1,13 +1,18 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"context"
+
 	"net/http"
 	"os"
+	"os/signal"
+	"time"
 
 	"yamcha/pkg/linebot"
 	pkgStorage "yamcha/pkg/storage"
+
+	"github.com/labstack/echo"
+	log "github.com/sirupsen/logrus"
 )
 
 var bot linebot.LineBot
@@ -24,17 +29,30 @@ func main() {
 		return
 	}
 
-	// regiest BOT APIs
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello world"))
+	// regiest APIs
+	e := echo.New()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
 	})
-	http.HandleFunc("/callback", bot.CallbackHandle)
+	e.POST("/callback", bot.CallbackHandle)
 
-	// run http service
-	port := os.Getenv("PORT")
-	addr := fmt.Sprintf(":%s", port)
-	fmt.Printf("Http Service run at port %s\n", addr)
-	if err = http.ListenAndServe(addr, nil); err != nil {
-		log.Println("End Http Service...")
+	// Start server
+	go func() {
+		port := os.Getenv("PORT")
+		log.Infof("service run at port %s", port)
+		if err := e.Start(port); err != nil {
+			log.Warn("shutting down the server, error:", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 10 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		log.Fatal(err)
 	}
 }

@@ -3,12 +3,12 @@ package linebot
 import (
 	"errors"
 	"fmt"
-	"log"
-	"net/http"
 
 	"yamcha/pkg/storage"
 
+	"github.com/labstack/echo"
 	"github.com/line/line-bot-sdk-go/linebot"
+	log "github.com/sirupsen/logrus"
 )
 
 // define yamcha const
@@ -24,7 +24,7 @@ var (
 
 // LineBot define basic line bot interface
 type LineBot interface {
-	CallbackHandle(http.ResponseWriter, *http.Request)
+	CallbackHandle(c echo.Context) error
 }
 
 // YamchaLineBot app
@@ -40,8 +40,8 @@ func NewYambotLineBot(channelSecret, channelToken string, storage storage.Storag
 		return nil, err
 	}
 
-	log.Println("Channel Secret:", channelSecret)
-	log.Println("Channel Token:", channelToken)
+	log.Info("Channel Secret:", channelSecret)
+	log.Info("Channel Token:", channelToken)
 
 	return &YamchaLineBot{
 		Storage: storage,
@@ -50,15 +50,13 @@ func NewYambotLineBot(channelSecret, channelToken string, storage storage.Storag
 }
 
 // CallbackHandle function for http server
-func (app *YamchaLineBot) CallbackHandle(w http.ResponseWriter, r *http.Request) {
-	events, err := app.bot.ParseRequest(r)
+func (app *YamchaLineBot) CallbackHandle(c echo.Context) error {
+	events, err := app.bot.ParseRequest(c.Request())
 	if err != nil {
 		if err == linebot.ErrInvalidSignature {
-			w.WriteHeader(400)
-		} else {
-			w.WriteHeader(500)
+			return c.JSON(400, err)
 		}
-		return
+		return c.JSON(500, err)
 	}
 
 	for _, event := range events {
@@ -105,4 +103,5 @@ func (app *YamchaLineBot) CallbackHandle(w http.ResponseWriter, r *http.Request)
 			log.Printf("Unknown event: %v", event)
 		}
 	}
+	return c.NoContent(200)
 }
