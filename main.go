@@ -38,7 +38,7 @@ func main() {
 
 	// Start server
 	go func() {
-		port := os.Getenv("PORT")
+		port := ":" + os.Getenv("PORT")
 		log.Infof("service run at port %s", port)
 		if err := e.Start(port); err != nil {
 			log.Warn("shutting down the server, error:", err)
