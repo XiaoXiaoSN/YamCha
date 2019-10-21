@@ -36,6 +36,12 @@ func main() {
 	})
 	e.POST("/callback", bot.CallbackHandle)
 
+	err = initRestfulAPI(e)
+	if err != nil {
+		log.Panicln("failed to regiest Restful API...")
+		return
+	}
+
 	// Start server
 	go func() {
 		port := ":" + os.Getenv("PORT")
