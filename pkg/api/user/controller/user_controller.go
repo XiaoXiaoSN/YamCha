@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"yamcha/pkg/api"
 	"yamcha/pkg/api/user"
 
 	"github.com/labstack/echo"
@@ -30,8 +31,10 @@ func (ctl *UserController) UserListEndpoint(c echo.Context) error {
 
 	userList, err := ctl.userSvc.UserList(ctx)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
 	}
 
-	return c.JSON(http.StatusOK, userList)
+	return c.JSON(http.StatusOK, api.H{
+		"data": userList,
+	})
 }
