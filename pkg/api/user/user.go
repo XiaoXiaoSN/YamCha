@@ -16,10 +16,12 @@ type User struct {
 
 // Service is a user service
 type Service interface {
+	UserList(ctx context.Context) ([]User, error)
 	CreateUser(ctx context.Context, u User) error
 }
 
 // Repository is a user repo
 type Repository interface {
+	UserList(ctx context.Context) ([]User, error)
 	CreateUser(ctx context.Context, u User) error
 }

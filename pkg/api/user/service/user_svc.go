@@ -21,3 +21,8 @@ func NewUserService(userRepo user.Repository) user.Service {
 func (svc *UserService) CreateUser(ctx context.Context, u user.User) error {
 	return nil
 }
+
+// UserList ...
+func (svc *UserService) UserList(ctx context.Context) ([]user.User, error) {
+	return svc.UserRepo.UserList(ctx)
+}
