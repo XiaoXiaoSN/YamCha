@@ -20,18 +20,27 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 }
 
 // CreateOrder ...
-func (repo *OrderRepository) CreateOrder(ctx context.Context, u order.Order) error {
-	return nil
+func (repo *OrderRepository) CreateOrder(ctx context.Context, id string) (order.Order, error) {
+	orderObject := order.Order{
+		Channel: id,
+	}
+	err := repo.db.Model(&order.Order{}).Create(&orderObject).Error
+	if err != nil {
+		return order.Order{}, err
+	}
+
+	return orderObject, nil
+
 }
 
 // OrderList ...
-func (repo *OrderRepository) OrderList(ctx context.Context) ([]order.Order, error) {
-	orderList := []order.Order{}
+func (repo *OrderRepository) OrderList(ctx context.Context, id string) (order.Order, error) {
+	orderObject := order.Order{}
 
-	err := repo.db.Model(&order.Order{}).Find(&orderList).Error
+	err := repo.db.Model(&order.Order{}).Where("id = ?", id).First(&orderObject).Error
 	if err != nil {
-		return []order.Order{}, err
+		return order.Order{}, err
 	}
 
-	return orderList, nil
+	return orderObject, nil
 }

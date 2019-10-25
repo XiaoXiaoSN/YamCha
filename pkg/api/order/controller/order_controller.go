@@ -22,19 +22,28 @@ func NewOrdercontroller(orderSvc order.Service) *OrderController {
 
 // CreateOrderEndpoint ...
 func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
-	return nil
-}
-
-// OrderListEndpoint return orders
-func (ctl *OrderController) OrderListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
-
-	orderList, err := ctl.orderSvc.OrderList(ctx)
+	id := c.Param("channelId")
+	orderObject, err := ctl.orderSvc.CreateOrder(ctx, id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
 	}
 
 	return c.JSON(http.StatusOK, api.H{
-		"data": orderList,
+		"data": orderObject,
+	})
+}
+
+// OrderListEndpoint return orders
+func (ctl *OrderController) OrderListEndpoint(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := c.Param("orderId")
+	orderObject, err := ctl.orderSvc.OrderList(ctx, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+	}
+
+	return c.JSON(http.StatusOK, api.H{
+		"data": orderObject,
 	})
 }

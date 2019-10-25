@@ -18,11 +18,11 @@ func NewOrderService(orderRepo order.Repository) order.Service {
 }
 
 // CreateOrder ...
-func (svc *OrderService) CreateOrder(ctx context.Context, u order.Order) error {
-	return nil
+func (svc *OrderService) CreateOrder(ctx context.Context, id string) (order.Order, error) {
+	return svc.OrderRepo.CreateOrder(ctx, id)
 }
 
 // OrderList ...
-func (svc *OrderService) OrderList(ctx context.Context) ([]order.Order, error) {
-	return svc.OrderRepo.OrderList(ctx)
+func (svc *OrderService) OrderList(ctx context.Context, id string) (order.Order, error) {
+	return svc.OrderRepo.OrderList(ctx, id)
 }
