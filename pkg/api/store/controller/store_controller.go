@@ -8,24 +8,39 @@ import (
 	"github.com/labstack/echo"
 )
 
-// UserController is a api controller
+// StoreController is a api controller
 type StoreController struct {
 	storeSvc store.Service
 }
 
-// NewUsercontroller make a user controllerr
-func NewUsercontroller(storeSvc store.Service) *StoreController {
+// NewStorecontroller make a user controllerr
+func NewStorecontroller(storeSvc store.Service) *StoreController {
 	return &StoreController{
 		storeSvc: storeSvc,
 	}
 }
 
-// CreateUserEndpoint ...
+// CreateStoreEndpoint ...
 func (ctl *StoreController) CreateStoreEndpoint(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+	data := &store.Store{}
+	e := c.Bind(data)
+	if e == nil {
+		storeData, err := ctl.storeSvc.CreateStore(ctx, *data)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		} else {
+			return c.JSON(http.StatusOK, api.H{
+				"data": storeData,
+			})
+		}
+	} else {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": e})
+	}
+
 }
 
-// UserListEndpoint return users
+// StoreListEndpoint return users
 func (ctl *StoreController) StoreListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 	storeList, err := ctl.storeSvc.StoreList(ctx)

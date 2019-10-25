@@ -18,8 +18,8 @@ func NewStoreService(storeRepo store.Repository) store.Service {
 }
 
 // CreateUser ...
-func (svc *StoreService) CreateStore(ctx context.Context, u store.Store) error {
-	return nil
+func (svc *StoreService) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
+	return svc.StoreRepo.CreateStore(ctx, u)
 }
 
 // UserList ...

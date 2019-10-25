@@ -20,8 +20,15 @@ func NewStoreRepository(db *gorm.DB) store.Repository {
 }
 
 // CreateUser ...
-func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) error {
-	return nil
+func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
+	createItem := u
+
+	err := repo.db.Model(&store.Store{}).Create(&createItem).Error
+	if err != nil {
+		return u, err
+	}
+
+	return createItem, nil
 }
 
 // UserList ...

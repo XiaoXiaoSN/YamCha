@@ -17,11 +17,11 @@ type Store struct {
 // Service is a store service
 type Service interface {
 	StoreList(ctx context.Context) ([]Store, error)
-	CreateStore(ctx context.Context, u Store) error
+	CreateStore(ctx context.Context, u Store) (Store, error)
 }
 
 // Repository is a store repo
 type Repository interface {
 	StoreList(ctx context.Context) ([]Store, error)
-	CreateStore(ctx context.Context, u Store) error
+	CreateStore(ctx context.Context, u Store) (Store, error)
 }
