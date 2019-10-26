@@ -21,6 +21,11 @@ func NewUserRepository(db *gorm.DB) user.Repository {
 
 // CreateUser ...
 func (repo *UserRepository) CreateUser(ctx context.Context, u user.User) error {
+	err := repo.db.Model(&user.User{}).Create(&u).Error
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

@@ -22,7 +22,24 @@ func NewUsercontroller(userSvc user.Service) *UserController {
 
 // CreateUserEndpoint ...
 func (ctl *UserController) CreateUserEndpoint(c echo.Context) error {
-	return nil
+	ctx := c.Request().Context()
+
+	u := user.User{}
+	err := c.Bind(&u)
+	if err != nil {
+		return c.JSON(http.StatusCreated, api.H{
+			"error": err,
+		})
+	}
+
+	err = ctl.userSvc.CreateUser(ctx, u)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+	}
+
+	return c.JSON(http.StatusCreated, api.H{
+		"data": true,
+	})
 }
 
 // UserListEndpoint return users
