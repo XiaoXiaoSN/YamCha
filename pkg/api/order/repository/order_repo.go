@@ -20,9 +20,10 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 }
 
 // CreateOrder ...
-func (repo *OrderRepository) CreateOrder(ctx context.Context, id string) (order.Order, error) {
+func (repo *OrderRepository) CreateOrder(ctx context.Context, param order.Params) (order.Order, error) {
 	orderObject := order.Order{
-		Channel: id,
+		Group:   param.Group,
+		Creator: param.Creator,
 	}
 	err := repo.db.Model(&order.Order{}).Create(&orderObject).Error
 	if err != nil {
