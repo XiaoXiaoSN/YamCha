@@ -78,7 +78,7 @@ var initJsonData = []byte(`{
         "action": {
           "type": "uri",
           "label": "首頁介紹",
-          "uri": "line://app/1653300700-5Pl8q9Q3"
+          "uri": "line://app/1653300700-RjMGPkqA?path=menu&"
         }
       },
       {
