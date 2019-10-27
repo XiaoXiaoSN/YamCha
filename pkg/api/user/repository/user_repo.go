@@ -20,6 +20,23 @@ func NewUserRepository(db *gorm.DB) user.Repository {
 }
 
 // CreateUser ...
-func (svc *UserRepository) CreateUser(ctx context.Context, u user.User) error {
+func (repo *UserRepository) CreateUser(ctx context.Context, u user.User) error {
+	err := repo.db.Model(&user.User{}).Create(&u).Error
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+// UserList ...
+func (repo *UserRepository) UserList(ctx context.Context) ([]user.User, error) {
+	userList := []user.User{}
+
+	err := repo.db.Model(&user.User{}).Find(&userList).Error
+	if err != nil {
+		return []user.User{}, err
+	}
+
+	return userList, nil
 }
