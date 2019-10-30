@@ -77,8 +77,8 @@ var initJsonData = []byte(`{
         "height": "sm",
         "action": {
           "type": "uri",
-          "label": "首頁介紹",
-          "uri": "line://app/1653300700-RjMGPkqA?path=menu&"
+          "label": "新增品項",
+          "uri": "line://app/1653300700-XoG9ARmW"
         }
       },
       {
@@ -88,7 +88,7 @@ var initJsonData = []byte(`{
         "action": {
           "type": "uri",
           "label": "查詢菜單",
-          "uri": "line://app/1653300700-5Pl8q9Q3?hashpath=menu"
+          "uri": "line://app/1653300700-MkLyEONB"
         }
       },
       {
