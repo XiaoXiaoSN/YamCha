@@ -47,8 +47,8 @@ var initJsonData = []byte(`{
         "height": "sm",
         "action": {
           "type": "uri",
-          "label": "新增訂單",
-          "uri": "line://app/1653300700-EjDoldvQ"
+          "label": "正規uri",
+          "uri": "line://app/1653300700-GRVkpRLA?hashpath=/#menu"
         }
       },
       {
@@ -77,8 +77,8 @@ var initJsonData = []byte(`{
         "height": "sm",
         "action": {
           "type": "uri",
-          "label": "首頁介紹",
-          "uri": "line://app/1653300700-5Pl8q9Q3"
+          "label": "新增品項",
+          "uri": "line://app/1653300700-XoG9ARmW"
         }
       },
       {
@@ -88,7 +88,7 @@ var initJsonData = []byte(`{
         "action": {
           "type": "uri",
           "label": "查詢菜單",
-          "uri": "line://app/1653300700-ydEGLgZR"
+          "uri": "line://app/1653300700-MkLyEONB"
         }
       },
       {
