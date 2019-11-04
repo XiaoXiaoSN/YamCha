@@ -6,8 +6,8 @@ import (
 
 // Store Object
 type Store struct {
-	ID   int    `gorm:"id" json:"id"`
-	Name string `gorm:"name" json:"name"`
+	ID        int    `gorm:"id" json:"id"`
+	GroupName string `gorm:"group_name" json:"group_name"`
 	// CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 	// UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
 }
@@ -21,6 +21,16 @@ type BranchStore struct {
 	Phone        string `gorm:"phone" json:"phone"`
 	// CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 	// UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
+}
+
+// TableName of Store
+func (s *Store) TableName() string {
+	return "store_groups"
+}
+
+// TableName of BranchStore
+func (s *BranchStore) TableName() string {
+	return "stores"
 }
 
 // Service is a store service

@@ -45,12 +45,12 @@ func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, erro
 
 // BranchStoreList ...
 func (repo *StoreRepository) BranchStoreList(ctx context.Context, id string) ([]store.BranchStore, error) {
-	storeList := []store.BranchStore{}
+	branchStoreList := []store.BranchStore{}
 
-	err := repo.db.Model(&store.Store{}).Find(&storeList).Error
+	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", id).Find(&branchStoreList).Error
 	if err != nil {
 		return []store.BranchStore{}, err
 	}
 
-	return storeList, nil
+	return branchStoreList, nil
 }
