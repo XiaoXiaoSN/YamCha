@@ -6,10 +6,19 @@ import (
 
 // Store Object
 type Store struct {
-	ID      int    `gorm:"id" json:"id"`
-	Name    string `gorm:"name" json:"name"`
-	Address string `gorm:"address" json:"address"`
-	Phone   string `gorm:"phone" json:"phone"`
+	ID   int    `gorm:"id" json:"id"`
+	Name string `gorm:"name" json:"name"`
+	// CreatedAt time.Time `gorm:"created_at" json:"created_at"`
+	// UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
+}
+
+// BranchStore Object
+type BranchStore struct {
+	ID           int    `gorm:"id" json:"id"`
+	Name         string `gorm:"name" json:"name"`
+	StoreGroupID int    `gorm:"store_group_id" json:"store_group_id"`
+	Address      string `gorm:"address" json:"address"`
+	Phone        string `gorm:"phone" json:"phone"`
 	// CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 	// UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
 }
@@ -17,11 +26,13 @@ type Store struct {
 // Service is a store service
 type Service interface {
 	StoreList(ctx context.Context) ([]Store, error)
+	BranchStoreList(ctx context.Context, id string) ([]BranchStore, error)
 	CreateStore(ctx context.Context, u Store) (Store, error)
 }
 
 // Repository is a store repo
 type Repository interface {
 	StoreList(ctx context.Context) ([]Store, error)
+	BranchStoreList(ctx context.Context, id string) ([]BranchStore, error)
 	CreateStore(ctx context.Context, u Store) (Store, error)
 }

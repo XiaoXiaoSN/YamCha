@@ -29,14 +29,14 @@ func (ctl *StoreController) CreateStoreEndpoint(c echo.Context) error {
 		storeData, err := ctl.storeSvc.CreateStore(ctx, *data)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, api.H{"error": err})
-		} else {
-			return c.JSON(http.StatusOK, api.H{
-				"data": storeData,
-			})
 		}
-	} else {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": e})
+
+		return c.JSON(http.StatusOK, api.H{
+			"data": storeData,
+		})
 	}
+
+	return c.JSON(http.StatusInternalServerError, api.H{"error": e})
 
 }
 
@@ -50,5 +50,19 @@ func (ctl *StoreController) StoreListEndpoint(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, api.H{
 		"data": storeList,
+	})
+}
+
+// BranchStoreListEndpoint return users
+func (ctl *StoreController) BranchStoreListEndpoint(c echo.Context) error {
+	ctx := c.Request().Context()
+	id := c.Param("storeId")
+	branchStoreList, err := ctl.storeSvc.BranchStoreList(ctx, id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+	}
+
+	return c.JSON(http.StatusOK, api.H{
+		"data": branchStoreList,
 	})
 }

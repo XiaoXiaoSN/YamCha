@@ -7,19 +7,19 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// UserRepository implment a user Repository
+// StoreRepository implment a user Repository
 type StoreRepository struct {
 	db *gorm.DB
 }
 
-// NewUserRepository make a user Repositoryr
+// NewStoreRepository make a user Repositoryr
 func NewStoreRepository(db *gorm.DB) store.Repository {
 	return &StoreRepository{
 		db: db,
 	}
 }
 
-// CreateUser ...
+// CreateStore ...
 func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
 	createItem := u
 
@@ -31,13 +31,25 @@ func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) (st
 	return createItem, nil
 }
 
-// UserList ...
+// StoreList ...
 func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, error) {
 	storeList := []store.Store{}
 
 	err := repo.db.Model(&store.Store{}).Find(&storeList).Error
 	if err != nil {
 		return []store.Store{}, err
+	}
+
+	return storeList, nil
+}
+
+// BranchStoreList ...
+func (repo *StoreRepository) BranchStoreList(ctx context.Context, id string) ([]store.BranchStore, error) {
+	storeList := []store.BranchStore{}
+
+	err := repo.db.Model(&store.Store{}).Find(&storeList).Error
+	if err != nil {
+		return []store.BranchStore{}, err
 	}
 
 	return storeList, nil
