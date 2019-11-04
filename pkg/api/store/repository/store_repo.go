@@ -20,15 +20,13 @@ func NewStoreRepository(db *gorm.DB) store.Repository {
 }
 
 // CreateStore ...
-func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
-	createItem := u
-
-	err := repo.db.Model(&store.Store{}).Create(&createItem).Error
+func (repo *StoreRepository) CreateStore(ctx context.Context, targetStore store.Store) (store.Store, error) {
+	err := repo.db.Model(&store.Store{}).Create(&targetStore).Error
 	if err != nil {
-		return u, err
+		return targetStore, err
 	}
 
-	return createItem, nil
+	return targetStore, nil
 }
 
 // StoreList ...
@@ -44,10 +42,10 @@ func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, erro
 }
 
 // BranchStoreList ...
-func (repo *StoreRepository) BranchStoreList(ctx context.Context, id string) ([]store.BranchStore, error) {
+func (repo *StoreRepository) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
 	branchStoreList := []store.BranchStore{}
 
-	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", id).Find(&branchStoreList).Error
+	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", storeID).Find(&branchStoreList).Error
 	if err != nil {
 		return []store.BranchStore{}, err
 	}

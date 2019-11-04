@@ -28,6 +28,6 @@ func (svc *StoreService) StoreList(ctx context.Context) ([]store.Store, error) {
 }
 
 // BranchStoreList ...
-func (svc *StoreService) BranchStoreList(ctx context.Context, id string) ([]store.BranchStore, error) {
-	return svc.StoreRepo.BranchStoreList(ctx, id)
+func (svc *StoreService) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
+	return svc.StoreRepo.BranchStoreList(ctx, storeID)
 }

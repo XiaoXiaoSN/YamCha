@@ -6,7 +6,9 @@ import (
 
 // SetRoutes regiester stores api
 func SetRoutes(engine *echo.Echo, storeCtl *StoreController) {
-	engine.GET("/stores", storeCtl.StoreListEndpoint)
-	engine.GET("/stores/:storeId", storeCtl.BranchStoreListEndpoint)
-	engine.POST("/stores", storeCtl.CreateStoreEndpoint)
+	apiV1Group := engine.Group("/api/v1")
+
+	apiV1Group.GET("/stores", storeCtl.StoreListEndpoint)
+	apiV1Group.GET("/stores/:storeId", storeCtl.BranchStoreListEndpoint)
+	apiV1Group.POST("/stores", storeCtl.CreateStoreEndpoint)
 }

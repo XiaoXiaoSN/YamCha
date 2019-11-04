@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	pkgUser "yamcha/pkg/api/user"
 	userCtl "yamcha/pkg/api/user/controller"
 	userRepo "yamcha/pkg/api/user/repository"
@@ -16,11 +17,12 @@ import (
 	orderRepo "yamcha/pkg/api/order/repository"
 	orderSvc "yamcha/pkg/api/order/service"
 
-	pkgDB "yamcha/pkg/database"
+	pkgDB "yamcha/internal/pkg/database"
 
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 )
 
 var (
@@ -33,6 +35,24 @@ var (
 	_orderRepo pkgOrder.Repository
 	_orderSvc  pkgOrder.Service
 )
+
+var middlewareCfg = middleware.CORSConfig{
+	AllowOrigins: []string{"*"},
+	AllowMethods: []string{
+		http.MethodGet,
+		http.MethodPost,
+		http.MethodPut,
+		http.MethodDelete,
+		http.MethodPatch,
+	},
+	AllowHeaders: []string{
+		"*",
+		echo.HeaderAuthorization,
+		echo.HeaderContentType,
+		echo.HeaderOrigin,
+		echo.HeaderContentLength,
+	},
+}
 
 func initRestfulAPI(e *echo.Echo) error {
 	// TODO: config file
