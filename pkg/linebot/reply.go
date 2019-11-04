@@ -2,6 +2,7 @@ package linebot
 
 import (
 	"github.com/line/line-bot-sdk-go/linebot"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -11,7 +12,7 @@ const (
 	ConfirmMessageNo  = "不要!"
 )
 
-var initJsonData = []byte(`{
+var initJSONData = []byte(`{
   "type": "bubble",
   "hero": {
     "type": "image",
@@ -47,8 +48,8 @@ var initJsonData = []byte(`{
         "height": "sm",
         "action": {
           "type": "uri",
-          "label": "正規uri",
-          "uri": "line://app/1653300700-GRVkpRLA?hashpath=/#menu"
+          "label": "新增訂單",
+          "uri": "line://app/1653300700-odMBaL1P"
         }
       },
       {
@@ -78,7 +79,7 @@ var initJsonData = []byte(`{
         "action": {
           "type": "uri",
           "label": "新增品項",
-          "uri": "line://app/1653300700-XoG9ARmW"
+          "uri": "line://app/1653300700-EjDoldvQ"
         }
       },
       {
@@ -88,7 +89,56 @@ var initJsonData = []byte(`{
         "action": {
           "type": "uri",
           "label": "查詢菜單",
-          "uri": "line://app/1653300700-MkLyEONB"
+          "uri": "line://app/1653300700-ydEGLgZR"
+        }
+      },
+      {
+        "type": "spacer",
+        "size": "sm"
+      }
+    ],
+    "flex": 0
+  }
+}`)
+
+var progressMenuJSON = []byte(`{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover",
+    "action": {
+      "type": "uri",
+      "uri": "http://linecorp.com/"
+    }
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "飲茶 ver.0.0.1 beta",
+        "weight": "bold",
+        "size": "xl"
+      }
+    ]
+  },
+  "footer": {
+    "type": "box",
+    "layout": "vertical",
+    "spacing": "sm",
+    "contents": [
+      {
+        "type": "button",
+        "style": "link",
+        "height": "sm",
+        "action": {
+          "type": "uri",
+          "label": "新增訂單",
+          "uri": "line://app/1653300700-odMBaL1P"
         }
       },
       {
@@ -112,9 +162,10 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	return nil
 }
 
-func (app *YamchaLineBot) replyFlex(replyToken, text string) error {
+func (app *YamchaLineBot) replyFlex(replyToken string) error {
 	log.Println("reply token in replyFlex:", replyToken)
-	if container, err := linebot.UnmarshalFlexMessageJSON(initJsonData); err != nil {
+
+	if container, err := linebot.UnmarshalFlexMessageJSON(initJSONData); err != nil {
 		log.Println("err:", err)
 
 		return err

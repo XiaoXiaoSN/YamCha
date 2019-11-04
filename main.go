@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"yamcha/pkg/linebot"
-	pkgStorage "yamcha/pkg/storage"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -21,11 +20,11 @@ var bot linebot.LineBot
 func main() {
 	var err error
 
-	storage := pkgStorage.NewMemoryStorage()
+	// storage := pkgStorage.NewMemoryStorage()
 
 	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
-	if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, storage); err != nil {
+	if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
 		log.Println("Bot:", bot, " err:", err)
 		return
 	}
