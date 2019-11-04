@@ -3,8 +3,7 @@ package linebot
 import (
 	"errors"
 	"fmt"
-
-	"yamcha/pkg/storage"
+	"yamcha/pkg/api/order"
 
 	"github.com/labstack/echo"
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -29,12 +28,12 @@ type LineBot interface {
 
 // YamchaLineBot app
 type YamchaLineBot struct {
-	Storage storage.Storage
-	bot     *linebot.Client
+	orderSvc order.Service
+	bot      *linebot.Client
 }
 
 // NewYambotLineBot create a Yamcha line bot
-func NewYambotLineBot(channelSecret, channelToken string, storage storage.Storage) (LineBot, error) {
+func NewYambotLineBot(channelSecret, channelToken string, orderSvc order.Service) (LineBot, error) {
 	bot, err := linebot.New(channelSecret, channelToken)
 	if err != nil {
 		return nil, err
@@ -44,8 +43,8 @@ func NewYambotLineBot(channelSecret, channelToken string, storage storage.Storag
 	log.Info("Channel Token:", channelToken)
 
 	return &YamchaLineBot{
-		Storage: storage,
-		bot:     bot,
+		bot:      bot,
+		orderSvc: orderSvc,
 	}, nil
 }
 

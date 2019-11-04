@@ -10,7 +10,7 @@ func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken st
 	// wake up yamcha!
 	case "yamcha", "Yamcha", "飲茶":
 		log.Info("reply token:", replyToken)
-		_ = app.wekeUp(message, replyToken, source)
+		_ = app.wakeUp(message, replyToken, source)
 		// if _, err := app.bot.ReplyMessage(
 		// 	replyToken,
 		// 	linebot.NewTextMessage("echo: "+message.Text),
@@ -49,35 +49,32 @@ func (app *YamchaLineBot) handleSticker(message *linebot.StickerMessage, replyTo
 	return nil
 }
 
-func (app *YamchaLineBot) wekeUp(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
+func (app *YamchaLineBot) wakeUp(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
 	log.Printf("Yamcha wakeup in group: %s", source.GroupID)
 
-	value := app.Storage.GetInt(source.GroupID + "Status")
-	if value == StatusYamchaSeelp {
-		err := app.Storage.Set(source.GroupID+"Status", 1)
-		if err != nil {
-			return err
-		}
-		// beta: return menu
-		if err := app.replyFlex(replyToken, "嘿！ 今天想喝點什麼?"); err != nil {
-			return err
-		}
-		// end beta
-		// if err := app.replyText(replyToken, "嘿！ 今天想喝點什麼?"); err != nil {
-		// 	return err
-		// }
-	} else if value == StatusYamchaWakeUp {
-		err := app.Storage.Set(source.GroupID+"Status", 1)
-		if err != nil {
-			return err
-		}
+	// value := app.orderSvc.GetInt(source.GroupID + "Status")
+	// if value == StatusYamchaSeelp {
+	// err := app.orderSvc.Set(source.GroupID+"Status", 1)
+	// if err != nil {
+	// 	return err
+	// }
 
-		if err := app.replyText(replyToken, "目前點餐的訂單有... (TODO)"); err != nil {
-			return err
-		}
-	} else {
-		return ErrUnknow
+	if err := app.replyFlex(replyToken); err != nil {
+		return err
 	}
+
+	// } else if value == StatusYamchaWakeUp {
+	// 	err := app.Storage.Set(source.GroupID+"Status", 1)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+
+	// 	if err := app.replyText(replyToken, "目前點餐的訂單有... (TODO)"); err != nil {
+	// 		return err
+	// 	}
+	// } else {
+	// 	return ErrUnknow
+	// }
 
 	return nil
 }
