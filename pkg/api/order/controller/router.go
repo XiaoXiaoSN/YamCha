@@ -7,5 +7,5 @@ import (
 // SetRoutes regiester orders api
 func SetRoutes(engine *echo.Echo, orderCtl *OrderController) {
 	engine.GET("/orders/:orderId", orderCtl.OrderListEndpoint)
-	engine.POST("/orders/:groupId", orderCtl.CreateOrderEndpoint)
+	engine.POST("/orders", orderCtl.CreateOrderEndpoint)
 }

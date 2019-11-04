@@ -21,17 +21,22 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 
 // CreateOrder ...
 func (repo *OrderRepository) CreateOrder(ctx context.Context, param order.Params) (order.Order, error) {
+
+	// Todo: Check if User registered
 	orderObject := order.Order{
-		Group:   param.Group,
-		Creator: param.Creator,
+		GroupID: param.GroupID,
+		Creator: param.CreatorID,
+		Status:  1,
+		Price:   "0",
+		Order:   "{}",
 	}
+
 	err := repo.db.Model(&order.Order{}).Create(&orderObject).Error
 	if err != nil {
 		return order.Order{}, err
 	}
 
 	return orderObject, nil
-
 }
 
 // OrderList ...

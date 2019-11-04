@@ -2,22 +2,26 @@ package order
 
 import (
 	"context"
+	"time"
 )
 
 // Order Object
 type Order struct {
-	ID      int    `gorm:"id" json:"id"`
-	Creator string `gorm:"creator" json:"creator"`
-	Group   string `gorm:"group_id" json:"group_id"`
-	Price   string `gorm:"price" json:"price"`
-	Order   string `gorm:"order" json:"order"`
-	// CreatedAt time.Time `gorm:"created_at" json:"created_at"`
-	// UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
+	ID        int       `gorm:"id" json:"id"`
+	Creator   int       `gorm:"creator" json:"creator"`
+	GroupID   int       `gorm:"group_id" json:"group_id"`
+	Status    int       `gorm:"status" json:"status"`
+	Price     string    `gorm:"price" json:"price"`
+	Order     string    `gorm:"order" json:"order"`
+	CreatedAt time.Time `gorm:"created_at" json:"created_at"`
+	UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
 }
 
+// Params from POST method
 type Params struct {
-	Creator string `gorm:"creator" json:"creator"`
-	Group   string `gorm:"group_id" json:"group_id"`
+	CreatorID     int `json:"creator_id" gorm:"creator_id" validate:"required"`
+	GroupID       int `json:"group_id" gorm:"group_id" validate:"required"`
+	BranchStoreID int `json:"branch_store_id" gorm:"branch_store_id" validate:"required"`
 }
 
 // Service is a Order service

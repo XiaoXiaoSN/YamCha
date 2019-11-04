@@ -26,7 +26,7 @@ func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
 
 	param := &order.Params{}
 	e := c.Bind(param)
-	if e != nil {
+	if e == nil {
 		orderObject, err := ctl.orderSvc.CreateOrder(ctx, *param)
 		if err != nil {
 			return c.JSON(http.StatusInternalServerError, api.H{"error": err})
@@ -34,9 +34,8 @@ func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
 		return c.JSON(http.StatusOK, api.H{
 			"data": orderObject,
 		})
-	} else {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": e})
 	}
+	return c.JSON(http.StatusInternalServerError, api.H{"error": e})
 	// id := c.Param("channelId")
 
 }
