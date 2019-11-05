@@ -18,8 +18,13 @@ func NewStoreService(storeRepo store.Repository) store.Service {
 }
 
 // CreateStore ...
-func (svc *StoreService) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
-	return svc.StoreRepo.CreateStore(ctx, u)
+func (svc *StoreService) CreateStore(ctx context.Context, tragetStore store.Store) (store.Store, error) {
+	return svc.StoreRepo.CreateStore(ctx, tragetStore)
+}
+
+// GetStore ...
+func (svc *StoreService) GetStore(ctx context.Context, storeID int) (store.Store, error) {
+	return svc.StoreRepo.GetStore(ctx, storeID)
 }
 
 // StoreList ...
@@ -30,4 +35,10 @@ func (svc *StoreService) StoreList(ctx context.Context) ([]store.Store, error) {
 // BranchStoreList ...
 func (svc *StoreService) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
 	return svc.StoreRepo.BranchStoreList(ctx, storeID)
+}
+
+// CreateBranchStore ...
+func (svc *StoreService) CreateBranchStore(ctx context.Context, branchStore store.BranchStore) (store.BranchStore, error) {
+	return svc.StoreRepo.CreateBranchStore(ctx, branchStore)
+
 }

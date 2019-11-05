@@ -28,12 +28,12 @@ func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
 	cParam := order.CreateOrderParams{}
 	err := c.Bind(&cParam)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	orderObject, err := ctl.orderSvc.CreateOrder(ctx, cParam)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 	return c.JSON(http.StatusCreated, api.H{
 		"data": orderObject,
@@ -47,12 +47,12 @@ func (ctl *OrderController) GetOrderEndpoint(c echo.Context) error {
 	orderIDStr := c.Param("orderId")
 	orderID, err := strconv.Atoi(orderIDStr)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, api.H{"error": err})
+		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
 	}
 
 	orderObject, err := ctl.orderSvc.GetOrder(ctx, orderID)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, api.H{
@@ -67,12 +67,12 @@ func (ctl *OrderController) OrderListEndpoint(c echo.Context) error {
 	findParams := order.Params{}
 	err := c.Bind(&findParams)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	orderObject, err := ctl.orderSvc.OrderList(ctx, findParams)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, api.H{

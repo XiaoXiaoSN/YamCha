@@ -5,10 +5,11 @@ import (
 	"time"
 )
 
-// Store Object
+// Store is the publish name of the drink store
 type Store struct {
-	ID        int    `gorm:"id" json:"id"`
-	GroupName string `gorm:"group_name" json:"group_name"`
+	ID           int           `gorm:"id,primary_key" json:"id"`
+	GroupName    string        `gorm:"group_name" json:"group_name"`
+	BranchStores []BranchStore `gorm:"ForeignKey:store_group_id" json:"branch_stores,omit"`
 }
 
 // TableName of Store
@@ -16,9 +17,9 @@ func (s *Store) TableName() string {
 	return "stores"
 }
 
-// BranchStore Object
+// BranchStore always is one of the Store
 type BranchStore struct {
-	ID           int       `gorm:"id" json:"id"`
+	ID           int       `gorm:"id,primary_key" json:"id"`
 	Name         string    `gorm:"name" json:"name"`
 	StoreGroupID int       `gorm:"store_group_id" json:"store_group_id"`
 	Address      string    `gorm:"address" json:"address"`
@@ -34,14 +35,22 @@ func (s *BranchStore) TableName() string {
 
 // Service is a store service
 type Service interface {
+	GetStore(ctx context.Context, storeID int) (Store, error)
 	StoreList(ctx context.Context) ([]Store, error)
-	BranchStoreList(ctx context.Context, storeID int) ([]BranchStore, error)
 	CreateStore(ctx context.Context, s Store) (Store, error)
+
+	// branch store
+	BranchStoreList(ctx context.Context, storeID int) ([]BranchStore, error)
+	CreateBranchStore(ctx context.Context, branchStore BranchStore) (BranchStore, error)
 }
 
 // Repository is a store repo
 type Repository interface {
+	GetStore(ctx context.Context, storeID int) (Store, error)
 	StoreList(ctx context.Context) ([]Store, error)
-	BranchStoreList(ctx context.Context, storeID int) ([]BranchStore, error)
 	CreateStore(ctx context.Context, s Store) (Store, error)
+
+	// branch store
+	BranchStoreList(ctx context.Context, storeID int) ([]BranchStore, error)
+	CreateBranchStore(ctx context.Context, branchStore BranchStore) (BranchStore, error)
 }
