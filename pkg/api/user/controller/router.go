@@ -6,6 +6,8 @@ import (
 
 // SetRoutes regiester users api
 func SetRoutes(engine *echo.Echo, userCtl *UserController) {
-	engine.GET("/users", userCtl.UserListEndpoint)
-	engine.POST("/users", userCtl.CreateUserEndpoint)
+	apiV1Group := engine.Group("/api/v1")
+
+	apiV1Group.GET("/users", userCtl.UserListEndpoint)
+	apiV1Group.POST("/users", userCtl.CreateUserEndpoint)
 }

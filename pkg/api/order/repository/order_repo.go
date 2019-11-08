@@ -20,18 +20,21 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 }
 
 // CreateOrder ...
-func (repo *OrderRepository) CreateOrder(ctx context.Context, param order.Params) (order.Order, error) {
+func (repo *OrderRepository) CreateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
 
-	// Todo: Check if User registered
-	orderObject := order.Order{
-		GroupID: param.GroupID,
-		Creator: param.CreatorID,
-		Status:  1,
-		Price:   "0",
-		Order:   "{}",
+	err := repo.db.Model(&order.Order{}).Create(&newOrder).Error
+	if err != nil {
+		return order.Order{}, err
 	}
 
-	err := repo.db.Model(&order.Order{}).Create(&orderObject).Error
+	return newOrder, nil
+}
+
+// GetOrder ...
+func (repo *OrderRepository) GetOrder(ctx context.Context, orderID int) (order.Order, error) {
+	orderObject := order.Order{}
+
+	err := repo.db.Model(&order.Order{}).Where("id = ?", orderID).First(&orderObject).Error
 	if err != nil {
 		return order.Order{}, err
 	}
@@ -40,13 +43,23 @@ func (repo *OrderRepository) CreateOrder(ctx context.Context, param order.Params
 }
 
 // OrderList ...
-func (repo *OrderRepository) OrderList(ctx context.Context, id string) (order.Order, error) {
-	orderObject := order.Order{}
+func (repo *OrderRepository) OrderList(ctx context.Context, params order.Params) ([]order.Order, error) {
+	orderList := []order.Order{}
 
-	err := repo.db.Model(&order.Order{}).Where("id = ?", id).First(&orderObject).Error
-	if err != nil {
-		return order.Order{}, err
+	model := repo.db.Model(&order.Order{})
+
+	// inject the filters
+	if params.CreatorID != nil {
+		model = model.Where("creator_id = ?", params.CreatorID)
+	}
+	if params.GroupID != nil {
+		model = model.Where("group_id = ?", params.GroupID)
 	}
 
-	return orderObject, nil
+	err := model.Find(&orderList).Error
+	if err != nil {
+		return []order.Order{}, err
+	}
+
+	return orderList, nil
 }

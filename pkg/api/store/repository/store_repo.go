@@ -20,15 +20,26 @@ func NewStoreRepository(db *gorm.DB) store.Repository {
 }
 
 // CreateStore ...
-func (repo *StoreRepository) CreateStore(ctx context.Context, u store.Store) (store.Store, error) {
-	createItem := u
-
-	err := repo.db.Model(&store.Store{}).Create(&createItem).Error
+func (repo *StoreRepository) CreateStore(ctx context.Context, targetStore store.Store) (store.Store, error) {
+	err := repo.db.Model(&store.Store{}).Create(&targetStore).Error
 	if err != nil {
-		return u, err
+		return targetStore, err
 	}
 
-	return createItem, nil
+	return targetStore, nil
+}
+
+// GetStore ...
+func (repo *StoreRepository) GetStore(ctx context.Context, storeID int) (store.Store, error) {
+	targetStore := store.Store{}
+
+	err := repo.db.Model(&store.Store{}).Preload("BranchStores").Find(&targetStore).Error
+	if err != nil {
+		// TODO: handle mysql 1602 duplicat error (should return http status 404)
+		return store.Store{}, err
+	}
+
+	return targetStore, nil
 }
 
 // StoreList ...
@@ -44,13 +55,23 @@ func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, erro
 }
 
 // BranchStoreList ...
-func (repo *StoreRepository) BranchStoreList(ctx context.Context, id string) ([]store.BranchStore, error) {
+func (repo *StoreRepository) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
 	branchStoreList := []store.BranchStore{}
 
-	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", id).Find(&branchStoreList).Error
+	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", storeID).Find(&branchStoreList).Error
 	if err != nil {
 		return []store.BranchStore{}, err
 	}
 
 	return branchStoreList, nil
+}
+
+// CreateBranchStore ...
+func (repo *StoreRepository) CreateBranchStore(ctx context.Context, branchStore store.BranchStore) (store.BranchStore, error) {
+	err := repo.db.Model(&store.Store{}).Create(&branchStore).Error
+	if err != nil {
+		return branchStore, err
+	}
+
+	return branchStore, nil
 }

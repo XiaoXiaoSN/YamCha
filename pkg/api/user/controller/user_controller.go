@@ -34,7 +34,7 @@ func (ctl *UserController) CreateUserEndpoint(c echo.Context) error {
 
 	err = ctl.userSvc.CreateUser(ctx, u)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusCreated, api.H{
@@ -48,7 +48,7 @@ func (ctl *UserController) UserListEndpoint(c echo.Context) error {
 
 	userList, err := ctl.userSvc.UserList(ctx)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, api.H{

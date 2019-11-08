@@ -20,8 +20,6 @@ var bot linebot.LineBot
 func main() {
 	var err error
 
-	// storage := pkgStorage.NewMemoryStorage()
-
 	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
 	if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
@@ -31,14 +29,7 @@ func main() {
 
 	// regiest APIs
 	e := echo.New()
-	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{
-			http.MethodGet,
-			http.MethodPost,
-		},
-		// AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
-	}))
+	e.Use(middleware.CORSWithConfig(middlewareCfg))
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})

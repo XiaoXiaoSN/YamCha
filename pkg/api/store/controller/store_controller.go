@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/store"
 
@@ -21,31 +22,32 @@ func NewStorecontroller(storeSvc store.Service) *StoreController {
 }
 
 // CreateStoreEndpoint ...
-func (ctl *StoreController) CreateStoreEndpoint(c echo.Context) error {
+func (ctl *StoreController) CreateStoreEndpoint(c echo.Context) (err error) {
 	ctx := c.Request().Context()
-	data := &store.Store{}
-	e := c.Bind(data)
-	if e == nil {
-		storeData, err := ctl.storeSvc.CreateStore(ctx, *data)
-		if err != nil {
-			return c.JSON(http.StatusInternalServerError, api.H{"error": err})
-		}
 
-		return c.JSON(http.StatusOK, api.H{
-			"data": storeData,
-		})
+	newStore := store.Store{}
+	if err = c.Bind(&newStore); err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
-	return c.JSON(http.StatusInternalServerError, api.H{"error": e})
+	var storeData store.Store
+	storeData, err = ctl.storeSvc.CreateStore(ctx, newStore)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
 
+	return c.JSON(http.StatusCreated, api.H{
+		"data": storeData,
+	})
 }
 
-// StoreListEndpoint return users
+// StoreListEndpoint all of stores
 func (ctl *StoreController) StoreListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
+
 	storeList, err := ctl.storeSvc.StoreList(ctx)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, api.H{
@@ -53,16 +55,69 @@ func (ctl *StoreController) StoreListEndpoint(c echo.Context) error {
 	})
 }
 
+// GetStoreEndpoint return target store
+func (ctl *StoreController) GetStoreEndpoint(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	storeIDStr := c.Param("storeId")
+	storeID, err := strconv.Atoi(storeIDStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
+	}
+
+	targetStore, err := ctl.storeSvc.GetStore(ctx, storeID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, api.H{
+		"data": targetStore,
+	})
+}
+
 // BranchStoreListEndpoint return users
 func (ctl *StoreController) BranchStoreListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
-	id := c.Param("storeId")
-	branchStoreList, err := ctl.storeSvc.BranchStoreList(ctx, id)
+
+	storeIDStr := c.Param("storeId")
+	storeID, err := strconv.Atoi(storeIDStr)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, api.H{"error": err})
+		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
+	}
+
+	branchStoreList, err := ctl.storeSvc.BranchStoreList(ctx, storeID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, api.H{
 		"data": branchStoreList,
+	})
+}
+
+// CreateBranchStoreEndpoint ...
+func (ctl *StoreController) CreateBranchStoreEndpoint(c echo.Context) (err error) {
+	ctx := c.Request().Context()
+
+	newBranchStore := store.BranchStore{}
+	if err = c.Bind(&newBranchStore); err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
+
+	storeIDStr := c.Param("storeId")
+	storeID, err := strconv.Atoi(storeIDStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
+	}
+	newBranchStore.StoreGroupID = storeID
+
+	var storeData store.BranchStore
+	storeData, err = ctl.storeSvc.CreateBranchStore(ctx, newBranchStore)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
+
+	return c.JSON(http.StatusCreated, api.H{
+		"data": storeData,
 	})
 }
