@@ -5,6 +5,7 @@ import (
 	"yamcha/pkg/api/order"
 
 	"github.com/jinzhu/gorm"
+	log "github.com/sirupsen/logrus"
 )
 
 // OrderRepository implment a order Repository
@@ -35,6 +36,18 @@ func (repo *OrderRepository) GetOrder(ctx context.Context, orderID int) (order.O
 	orderObject := order.Order{}
 
 	err := repo.db.Model(&order.Order{}).Where("id = ?", orderID).First(&orderObject).Error
+	if err != nil {
+		return order.Order{}, err
+	}
+
+	return orderObject, nil
+}
+
+// GetGroupOrder ...
+func (repo *OrderRepository) GetGroupOrder(groupID string) (order.Order, error) {
+	orderObject := order.Order{}
+	log.Println("GroupId", groupID)
+	err := repo.db.Model(&order.Order{}).Where("group_id = ? AND status = 1", groupID).First(&orderObject).Error
 	if err != nil {
 		return order.Order{}, err
 	}
