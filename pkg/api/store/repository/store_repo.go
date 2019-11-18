@@ -48,6 +48,8 @@ func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, erro
 
 	err := repo.db.Model(&store.Store{}).Find(&storeList).Error
 	if err != nil {
+		// log.Printf("Error: %s", err)
+
 		return []store.Store{}, err
 	}
 
