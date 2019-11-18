@@ -19,7 +19,7 @@ const (
 type Order struct {
 	ID        int             `gorm:"id" json:"id"`
 	Creator   int             `gorm:"creator" json:"creator"`
-	GroupID   int             `gorm:"group_id" json:"group_id"`
+	GroupID   string          `gorm:"group_id" json:"group_id"`
 	Status    int8            `gorm:"status" json:"status"`
 	Price     int             `gorm:"price" json:"price"`
 	Order     json.RawMessage `gorm:"order" json:"order"`
@@ -29,20 +29,21 @@ type Order struct {
 
 // Params for filter order list
 type Params struct {
-	CreatorID *int `json:"creator_id" query:"creator_id" form:"creator_id"`
-	GroupID   *int `json:"group_id" query:"group_id" form:"group_id"`
+	CreatorID *int    `json:"creator_id" query:"creator_id" form:"creator_id"`
+	GroupID   *string `json:"group_id" query:"group_id" form:"group_id"`
 }
 
 // CreateOrderParams for create a new order
 type CreateOrderParams struct {
-	CreatorID     int `json:"creator_id" validate:"required"`
-	GroupID       int `json:"group_id" validate:"required"`
-	BranchStoreID int `json:"branch_store_id" validate:"required"`
+	CreatorID     int    `json:"creator_id" validate:"required"`
+	GroupID       string `json:"group_id" validate:"required"`
+	BranchStoreID int    `json:"branch_store_id" validate:"required"`
 }
 
 // Service is a Order service
 type Service interface {
 	GetOrder(ctx context.Context, orderID int) (Order, error)
+	GetGroupOrder(groupID string) (Order, error)
 	OrderList(ctx context.Context, params Params) ([]Order, error)
 	CreateOrder(ctx context.Context, createOrderparams CreateOrderParams) (Order, error)
 }
@@ -50,6 +51,7 @@ type Service interface {
 // Repository is a Order repo
 type Repository interface {
 	GetOrder(ctx context.Context, orderID int) (Order, error)
+	GetGroupOrder(groupID string) (Order, error)
 	OrderList(ctx context.Context, params Params) ([]Order, error)
 	CreateOrder(ctx context.Context, order Order) (Order, error)
 }

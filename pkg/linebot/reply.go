@@ -1,6 +1,8 @@
 package linebot
 
 import (
+	"strings"
+
 	"github.com/line/line-bot-sdk-go/linebot"
 
 	log "github.com/sirupsen/logrus"
@@ -12,6 +14,37 @@ const (
 	ConfirmMessageNo  = "不要!"
 )
 
+// // Hero type structure
+// type Hero struct {
+// 	Type        string `json:"type"`
+// 	URL         string `json:"url"`
+// 	Size        string `json:"size"`
+// 	AspectRatio string `json:"aspectRatio"`
+// 	AspectMode  string `json:"aspectMode"`
+// }
+
+// type Button struct {
+// 	Type   string `json:"type"`
+// 	Style  string `json:"style"`
+// 	Height string `json:"height"`
+// 	Action
+// }
+
+// type Action struct {
+// 	Type  string `json:"type"`
+// 	Label string `json:"label"`
+// 	URI   string `json:"uri"`
+// }
+
+// type FlexMessage struct {
+//   Type string `json:"type"`
+//   Hero
+//   Body struct {
+//     Type
+//     Layout
+//     Contents Button[]
+//   } `json:"body"`
+// }
 var initJSONData = []byte(`{
   "type": "bubble",
   "hero": {
@@ -101,7 +134,7 @@ var initJSONData = []byte(`{
   }
 }`)
 
-var progressMenuJSON = []byte(`{
+var progressMenuString = `{
   "type": "bubble",
   "hero": {
     "type": "image",
@@ -138,7 +171,7 @@ var progressMenuJSON = []byte(`{
         "action": {
           "type": "uri",
           "label": "新增訂單",
-          "uri": "line://app/1653300700-odMBaL1P"
+          "uri": "line://app/1653300700-odMBaL1P?group=<groupID>"
         }
       },
       {
@@ -148,7 +181,7 @@ var progressMenuJSON = []byte(`{
     ],
     "flex": 0
   }
-}`)
+}`
 
 // TODO: 允許複數個 text
 func (app *YamchaLineBot) replyText(replyToken, text string) error {
@@ -162,12 +195,50 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	return nil
 }
 
-func (app *YamchaLineBot) replyFlex(replyToken string) error {
+func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 	log.Println("reply token in replyFlex:", replyToken)
+	log.Println("orderID:", groupID)
+	// check if order exists from db
+	log.Println("service", app.orderSvc)
+	orderID, errMsg := app.orderSvc.GetGroupOrder(groupID)
+	log.Println("orderID:", orderID)
+	if errMsg != nil {
+
+		log.Println("err:", errMsg)
+
+		// return create order menu
+		progressMenuJSON := strings.Replace(progressMenuString, "<groupID>", groupID, -1)
+
+		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(progressMenuJSON)); err != nil {
+			log.Println("err:", err)
+			return err
+		} else if _, errorMsg := app.bot.ReplyMessage(
+			replyToken,
+			linebot.NewFlexMessage("alt message", container),
+		).Do(); errorMsg != nil {
+			log.Println("reply token:", replyToken)
+			log.Println("reply text err:", errorMsg)
+			return errorMsg
+		}
+		// return err
+	} else {
+		// return selection menu
+		if container, err := linebot.UnmarshalFlexMessageJSON(initJSONData); err != nil {
+			log.Println("err:", err)
+			return err
+		} else if _, errorMsg := app.bot.ReplyMessage(
+			replyToken,
+			linebot.NewFlexMessage("alt message", container),
+		).Do(); errorMsg != nil {
+			log.Println("reply token:", replyToken)
+			log.Println("reply text err:", errorMsg)
+			return errorMsg
+		}
+		// return err
+	}
 
 	if container, err := linebot.UnmarshalFlexMessageJSON(initJSONData); err != nil {
 		log.Println("err:", err)
-
 		return err
 	} else if _, errorMsg := app.bot.ReplyMessage(
 		replyToken,

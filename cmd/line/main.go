@@ -8,7 +8,12 @@ import (
 	"os/signal"
 	"time"
 
+	pkgDB "yamcha/internal/pkg/database"
 	"yamcha/pkg/linebot"
+
+	pkgOrder "yamcha/pkg/api/order"
+	orderRepo "yamcha/pkg/api/order/repository"
+	orderSvc "yamcha/pkg/api/order/service"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -22,10 +27,30 @@ func main() {
 
 	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
+
+	// need modify
+	var (
+		_orderRepo pkgOrder.Repository
+		_orderSvc  pkgOrder.Service
+	)
+	db, err := pkgDB.NewDatabases(pkgDB.Config{
+		Username: "xiao",
+		Password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5",
+		Address:  "yamcha.10oz.tw:23306",
+		DBName:   "yamcha_db",
+		Env:      "dev",
+	})
+	if err != nil {
+		log.Println("err:", err)
+	}
+	_orderRepo = orderRepo.NewOrderRepository(db)
+	_orderSvc = orderSvc.NewOrderService(_orderRepo)
+
 	if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
 		log.Println("Bot:", bot, " err:", err)
 		return
 	}
+	// need modify
 
 	// regiest APIs
 	e := echo.New()

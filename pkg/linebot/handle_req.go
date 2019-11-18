@@ -59,7 +59,7 @@ func (app *YamchaLineBot) wakeUp(message *linebot.TextMessage, replyToken string
 	// 	return err
 	// }
 
-	if err := app.replyFlex(replyToken); err != nil {
+	if err := app.replyFlex(replyToken, source.GroupID); err != nil {
 		return err
 	}
 

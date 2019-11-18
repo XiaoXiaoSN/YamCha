@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"yamcha/pkg/api/order"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // OrderService implment a order service
@@ -27,6 +29,12 @@ func (svc *OrderService) CreateOrder(ctx context.Context, cParams order.CreateOr
 	}
 
 	return svc.OrderRepo.CreateOrder(ctx, orderObject)
+}
+
+// GetGroupOrder ...
+func (svc *OrderService) GetGroupOrder(groupID string) (order.Order, error) {
+	log.Println("in func")
+	return svc.OrderRepo.GetGroupOrder(groupID)
 }
 
 // GetOrder ...

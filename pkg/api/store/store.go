@@ -7,9 +7,9 @@ import (
 
 // Store is the publish name of the drink store
 type Store struct {
-	ID           int           `gorm:"id,primary_key" json:"id"`
-	GroupName    string        `gorm:"group_name" json:"group_name"`
-	BranchStores []BranchStore `gorm:"ForeignKey:store_group_id" json:"branch_stores,omit"`
+	ID        int    `gorm:"id,primary_key" json:"id"`
+	GroupName string `gorm:"group_name" json:"group_name"`
+	// BranchStores []BranchStore `gorm:"ForeignKey:store_group_id" json:"branch_stores,omit"`
 }
 
 // TableName of Store
