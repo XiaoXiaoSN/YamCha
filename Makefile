@@ -11,6 +11,7 @@ PORT=18180
 init:
 	go mod init $(PROJECT)
 	go mod tidy
+	cp configs/config.dev.yml configs/config.yml
 
 run:
 	LINECORP_PLATFORM_CHANNEL_SERVERURL=$(SERVERURL) \
@@ -19,3 +20,7 @@ run:
 	PORT=$(PORT) \
 	go run cmd/line/*.go
 
+release:
+	heroku container:login
+	heroku container:push web
+	heroku container:release web
