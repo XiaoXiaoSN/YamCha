@@ -13,4 +13,6 @@ require (
 	github.com/line/line-bot-sdk-go v6.3.0+incompatible
 	github.com/sirupsen/logrus v1.4.2
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550 // indirect
+	golang.org/x/net v0.0.0-20190522155817-f3200d17e092 // indirect
+	gopkg.in/yaml.v2 v2.2.4
 )

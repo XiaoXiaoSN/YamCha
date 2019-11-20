@@ -3,68 +3,23 @@ package main
 import (
 	"context"
 
-	"net/http"
 	"os"
 	"os/signal"
 	"time"
 
-	pkgDB "yamcha/internal/pkg/database"
-	"yamcha/pkg/linebot"
-
-	pkgOrder "yamcha/pkg/api/order"
-	orderRepo "yamcha/pkg/api/order/repository"
-	orderSvc "yamcha/pkg/api/order/service"
+	pkgConfig "yamcha/internal/pkg/config"
 
 	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 	log "github.com/sirupsen/logrus"
 )
 
-var bot linebot.LineBot
-
 func main() {
 	log.Println("yamcha init...")
-	var err error
+	cfg := pkgConfig.NewConfiguration("config.yml")
 
-	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
-	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
-
-	// need modify
-	{
-		var (
-			_orderRepo pkgOrder.Repository
-			_orderSvc  pkgOrder.Service
-		)
-		log.Println("start to connect db")
-		db, err := pkgDB.NewDatabases(pkgDB.Config{
-			Username: "xiao",
-			Password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5",
-			Address:  "yamcha.10oz.tw:23306",
-			DBName:   "yamcha_db",
-			Env:      "dev",
-		})
-		if err != nil {
-			log.Println("err:", err)
-		}
-		_orderRepo = orderRepo.NewOrderRepository(db)
-		_orderSvc = orderSvc.NewOrderService(_orderRepo)
-
-		if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
-			log.Println("Bot:", bot, " err:", err)
-			return
-		}
-	}
-	// need modify
-
-	// regiest APIs
+	// create Echo web service
 	e := echo.New()
-	e.Use(middleware.CORSWithConfig(middlewareCfg))
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
-	e.POST("/callback", bot.CallbackHandle)
-
-	err = initRestfulAPI(e)
+	err := initService(e, cfg)
 	if err != nil {
 		log.Panicln("failed to regiest Restful API...")
 		return
@@ -72,7 +27,7 @@ func main() {
 
 	// Start server
 	go func() {
-		port := ":" + os.Getenv("PORT")
+		port := cfg.Server.Port
 		log.Infof("service run at port %s", port)
 		if err := e.Start(port); err != nil {
 			log.Warn("shutting down the server, error:", err)

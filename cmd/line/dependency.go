@@ -2,6 +2,8 @@ package main
 
 import (
 	"net/http"
+	"os"
+
 	pkgUser "yamcha/pkg/api/user"
 	userCtl "yamcha/pkg/api/user/controller"
 	userRepo "yamcha/pkg/api/user/repository"
@@ -17,15 +19,24 @@ import (
 	orderRepo "yamcha/pkg/api/order/repository"
 	orderSvc "yamcha/pkg/api/order/service"
 
+	"yamcha/pkg/linebot"
+
+	pkgConfig "yamcha/internal/pkg/config"
 	pkgDB "yamcha/internal/pkg/database"
 
 	_ "github.com/go-sql-driver/mysql"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
 var (
+	lineChannelSecret string
+	lineChannelToken  string
+
+	bot linebot.LineBot
+
 	_userRepo pkgUser.Repository
 	_userSvc  pkgUser.Service
 
@@ -54,15 +65,39 @@ var middlewareCfg = middleware.CORSConfig{
 	},
 }
 
-func initRestfulAPI(e *echo.Echo) error {
-	// TODO: config file
-	db, err := pkgDB.NewDatabases(pkgDB.Config{
-		Username: "xiao",
-		Password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5",
-		Address:  "yamcha.10oz.tw:23306",
-		DBName:   "yamcha_db",
-		Env:      "dev",
+func init() {
+	lineChannelSecret = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
+	lineChannelToken = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
+}
+
+func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
+	log.Info("start to init service...")
+
+	// init dependency services
+	err = initDependencyService(e, cfg)
+	if err != nil {
+		return err
+	}
+
+	// init yamcha bot
+	bot, err = linebot.NewYambotLineBot(lineChannelSecret, lineChannelToken, _orderSvc)
+	if err != nil {
+		log.Infof("failed to init linebot.NewYambotLineBot err: %+v", err)
+		return err
+	}
+
+	// regiest restful API
+	e.Use(middleware.CORSWithConfig(middlewareCfg))
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
 	})
+	e.POST("/callback", bot.CallbackHandle)
+
+	return nil
+}
+
+func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
+	db, err := pkgDB.NewDatabases(cfg.DBCfg)
 	if err != nil {
 		return nil
 	}

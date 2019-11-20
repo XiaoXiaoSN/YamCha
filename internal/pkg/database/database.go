@@ -5,22 +5,14 @@ import (
 	"time"
 
 	"github.com/cenk/backoff"
+	pkgConfig "yamcha/internal/pkg/config"
 
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )
 
-// Config define db connection needs
-type Config struct {
-	Username string
-	Password string
-	Address  string
-	DBName   string
-	Env      string
-}
-
 // NewDatabases init and return write and read DB objects
-func NewDatabases(cfg Config) (*gorm.DB, error) {
+func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 	bo := backoff.NewExponentialBackOff()
 	bo.MaxElapsedTime = time.Duration(180) * time.Second
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
