@@ -23,32 +23,36 @@ import (
 var bot linebot.LineBot
 
 func main() {
+	log.Println("yamcha init...")
 	var err error
 
 	channelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	channelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
 
 	// need modify
-	var (
-		_orderRepo pkgOrder.Repository
-		_orderSvc  pkgOrder.Service
-	)
-	db, err := pkgDB.NewDatabases(pkgDB.Config{
-		Username: "xiao",
-		Password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5",
-		Address:  "yamcha.10oz.tw:23306",
-		DBName:   "yamcha_db",
-		Env:      "dev",
-	})
-	if err != nil {
-		log.Println("err:", err)
-	}
-	_orderRepo = orderRepo.NewOrderRepository(db)
-	_orderSvc = orderSvc.NewOrderService(_orderRepo)
+	{
+		var (
+			_orderRepo pkgOrder.Repository
+			_orderSvc  pkgOrder.Service
+		)
+		log.Println("start to connect db")
+		db, err := pkgDB.NewDatabases(pkgDB.Config{
+			Username: "xiao",
+			Password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5",
+			Address:  "yamcha.10oz.tw:23306",
+			DBName:   "yamcha_db",
+			Env:      "dev",
+		})
+		if err != nil {
+			log.Println("err:", err)
+		}
+		_orderRepo = orderRepo.NewOrderRepository(db)
+		_orderSvc = orderSvc.NewOrderService(_orderRepo)
 
-	if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
-		log.Println("Bot:", bot, " err:", err)
-		return
+		if bot, err = linebot.NewYambotLineBot(channelSecret, channelToken, _orderSvc); err != nil {
+			log.Println("Bot:", bot, " err:", err)
+			return
+		}
 	}
 	// need modify
 
