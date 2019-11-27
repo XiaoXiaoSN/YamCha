@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"yamcha/pkg/api/store"
 
 	"github.com/jinzhu/gorm"
@@ -58,9 +59,11 @@ func (repo *StoreRepository) StoreList(ctx context.Context) ([]store.Store, erro
 
 // BranchStoreList ...
 func (repo *StoreRepository) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
+	log.Println("in Branch:", storeID)
 	branchStoreList := []store.BranchStore{}
 
 	err := repo.db.Model(&store.BranchStore{}).Where("store_group_id = ?", storeID).Find(&branchStoreList).Error
+	log.Println("in Branch:", branchStoreList)
 	if err != nil {
 		return []store.BranchStore{}, err
 	}

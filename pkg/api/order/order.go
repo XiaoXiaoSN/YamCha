@@ -18,7 +18,7 @@ const (
 // Order Object
 type Order struct {
 	ID        int             `gorm:"id" json:"id"`
-	Creator   int             `gorm:"creator" json:"creator"`
+	Creator   string          `gorm:"creator" json:"creator"`
 	GroupID   string          `gorm:"group_id" json:"group_id"`
 	Status    int8            `gorm:"status" json:"status"`
 	Price     int             `gorm:"price" json:"price"`
@@ -35,9 +35,10 @@ type Params struct {
 
 // CreateOrderParams for create a new order
 type CreateOrderParams struct {
-	CreatorID     int    `json:"creator_id" validate:"required"`
-	GroupID       string `json:"group_id" validate:"required"`
-	BranchStoreID int    `json:"branch_store_id" validate:"required"`
+	CreatorID     string          `json:"creator_id" validate:"required"`
+	GroupID       string          `json:"group_id" validate:"required"`
+	BranchStoreID int             `json:"branch_store_id" validate:"required"`
+	Order         json.RawMessage `gorm:"order" json:"order"`
 }
 
 // Service is a Order service

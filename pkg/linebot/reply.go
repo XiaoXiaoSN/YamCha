@@ -45,7 +45,7 @@ const (
 //     Contents Button[]
 //   } `json:"body"`
 // }
-var initJSONData = []byte(`{
+var initJSONData = `{
   "type": "bubble",
   "hero": {
     "type": "image",
@@ -81,16 +81,6 @@ var initJSONData = []byte(`{
         "height": "sm",
         "action": {
           "type": "uri",
-          "label": "新增訂單",
-          "uri": "line://app/1653300700-odMBaL1P"
-        }
-      },
-      {
-        "type": "button",
-        "style": "link",
-        "height": "sm",
-        "action": {
-          "type": "uri",
           "label": "查詢訂單",
           "uri": "https://linecorp.com"
         }
@@ -112,7 +102,7 @@ var initJSONData = []byte(`{
         "action": {
           "type": "uri",
           "label": "新增品項",
-          "uri": "line://app/1653300700-EjDoldvQ"
+          "uri": "line://app/1653300700-EjDoldvQ?group=<groupID>"
         }
       },
       {
@@ -122,7 +112,7 @@ var initJSONData = []byte(`{
         "action": {
           "type": "uri",
           "label": "查詢菜單",
-          "uri": "line://app/1653300700-ydEGLgZR"
+          "uri": "line://app/1653300700-ydEGLgZR?group=<groupID>"
         }
       },
       {
@@ -132,7 +122,7 @@ var initJSONData = []byte(`{
     ],
     "flex": 0
   }
-}`)
+}`
 
 var progressMenuString = `{
   "type": "bubble",
@@ -196,17 +186,18 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 }
 
 func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
-	log.Println("reply token in replyFlex:", replyToken)
-	log.Println("orderID:", groupID)
+	// log.Println("reply token in replyFlex:", replyToken)
+	// log.Println("groupID:", groupID)
+
 	// check if order exists from db
-	log.Println("service", app.orderSvc)
-	orderID, errMsg := app.orderSvc.GetGroupOrder(groupID)
-	log.Println("orderID:", orderID)
-	if errMsg != nil {
+	// log.Println("service", app.orderSvc)
+
+	//  check if order exists
+	if _, errMsg := app.orderSvc.GetGroupOrder(groupID); errMsg != nil {
 
 		log.Println("err:", errMsg)
 
-		// return create order menu
+		// return create order menu if not
 		progressMenuJSON := strings.Replace(progressMenuString, "<groupID>", groupID, -1)
 
 		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(progressMenuJSON)); err != nil {
@@ -223,7 +214,9 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 		// return err
 	} else {
 		// return selection menu
-		if container, err := linebot.UnmarshalFlexMessageJSON(initJSONData); err != nil {
+		initMenuJSON := strings.Replace(initJSONData, "<groupID>", groupID, -1)
+
+		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(initMenuJSON)); err != nil {
 			log.Println("err:", err)
 			return err
 		} else if _, errorMsg := app.bot.ReplyMessage(
@@ -237,17 +230,18 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 		// return err
 	}
 
-	if container, err := linebot.UnmarshalFlexMessageJSON(initJSONData); err != nil {
-		log.Println("err:", err)
-		return err
-	} else if _, errorMsg := app.bot.ReplyMessage(
-		replyToken,
-		linebot.NewFlexMessage("alt message", container),
-	).Do(); errorMsg != nil {
-		log.Println("reply token:", replyToken)
-		log.Println("reply text err:", errorMsg)
-		return errorMsg
-	}
+	// initMenuJSON := strings.Replace(initJSONData, "<groupID>", groupID, -1)
+	// if container, err := linebot.UnmarshalFlexMessageJSON([]byte(initMenuJSON)); err != nil {
+	// 	log.Println("err:", err)
+	// 	return err
+	// } else if _, errorMsg := app.bot.ReplyMessage(
+	// 	replyToken,
+	// 	linebot.NewFlexMessage("alt message", container),
+	// ).Do(); errorMsg != nil {
+	// 	log.Println("reply token:", replyToken)
+	// 	log.Println("reply text err:", errorMsg)
+	// 	return errorMsg
+	// }
 	return nil
 }
 

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"yamcha/pkg/api"
@@ -81,6 +82,7 @@ func (ctl *StoreController) BranchStoreListEndpoint(c echo.Context) error {
 
 	storeIDStr := c.Param("storeId")
 	storeID, err := strconv.Atoi(storeIDStr)
+	log.Println("in Branch:", storeID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
 	}

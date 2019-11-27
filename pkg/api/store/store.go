@@ -26,6 +26,8 @@ type BranchStore struct {
 	Phone        string    `gorm:"phone" json:"phone"`
 	CreatedAt    time.Time `gorm:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `gorm:"updated_at" json:"updated_at"`
+	// CreatedAt time.Time
+	// UpdatedAt time.Time
 }
 
 // TableName of BranchStore

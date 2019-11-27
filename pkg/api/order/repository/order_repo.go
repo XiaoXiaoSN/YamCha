@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"yamcha/pkg/api/order"
 
 	"github.com/jinzhu/gorm"
@@ -22,7 +23,7 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 
 // CreateOrder ...
 func (repo *OrderRepository) CreateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
-
+	newOrder.Order = json.RawMessage("[]")
 	err := repo.db.Model(&order.Order{}).Create(&newOrder).Error
 	if err != nil {
 		return order.Order{}, err

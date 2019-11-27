@@ -30,7 +30,6 @@ func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
-
 	orderObject, err := ctl.orderSvc.CreateOrder(ctx, cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
