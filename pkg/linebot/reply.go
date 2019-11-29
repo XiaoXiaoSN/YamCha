@@ -102,7 +102,7 @@ var initJSONData = `{
         "action": {
           "type": "uri",
           "label": "新增品項",
-          "uri": "line://app/1653300700-EjDoldvQ?group=<groupID>"
+          "uri": "line://app/1653300700-EjDoldvQ?order=<orderID>"
         }
       },
       {
@@ -112,7 +112,7 @@ var initJSONData = `{
         "action": {
           "type": "uri",
           "label": "查詢菜單",
-          "uri": "line://app/1653300700-ydEGLgZR?group=<groupID>"
+          "uri": "line://app/1653300700-ydEGLgZR?order=<orderID>"
         }
       },
       {
@@ -193,7 +193,7 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 	// log.Println("service", app.orderSvc)
 
 	//  check if order exists
-	if _, errMsg := app.orderSvc.GetGroupOrder(groupID); errMsg != nil {
+	if orderData, errMsg := app.orderSvc.GetGroupOrder(groupID); errMsg != nil {
 
 		log.Println("err:", errMsg)
 
@@ -214,7 +214,8 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 		// return err
 	} else {
 		// return selection menu
-		initMenuJSON := strings.Replace(initJSONData, "<groupID>", groupID, -1)
+
+		initMenuJSON := strings.Replace(initJSONData, "<orderID>", string(orderData.ID), -1)
 
 		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(initMenuJSON)); err != nil {
 			log.Println("err:", err)
