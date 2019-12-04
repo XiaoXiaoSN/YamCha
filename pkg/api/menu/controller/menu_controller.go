@@ -1,11 +1,13 @@
 package controller
 
 import (
-	"github.com/labstack/echo"
+	"log"
 	"net/http"
 	"strconv"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/menu"
+
+	"github.com/labstack/echo"
 )
 
 // MenuController is a api controller
@@ -25,6 +27,7 @@ func (ctl MenuController) MenuListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
 	storeIDStr := c.Param("storeId")
+	log.Println(storeIDStr)
 	orderID, err := strconv.Atoi(storeIDStr)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})

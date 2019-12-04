@@ -77,3 +77,24 @@ func (repo *OrderRepository) OrderList(ctx context.Context, params order.Params)
 
 	return orderList, nil
 }
+
+// DeleteOrder ...
+func (repo *OrderRepository) DeleteOrder(ctx context.Context, orderID int) error {
+	// orderObject := order.Order{}
+	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", orderID).Update("status", 2).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateOrder ...
+func (repo *OrderRepository) UpdateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
+	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", newOrder.ID).Update("order", newOrder.Order).Error
+	if err != nil {
+		return order.Order{}, err
+	}
+
+	return newOrder, nil
+}

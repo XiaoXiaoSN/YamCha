@@ -78,3 +78,40 @@ func (ctl *OrderController) OrderListEndpoint(c echo.Context) error {
 		"data": orderObject,
 	})
 }
+
+// DeleteOrderEndpoint handle order delete logic
+func (ctl *OrderController) DeleteOrderEndpoint(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	orderIDStr := c.Param("orderId")
+	orderID, err := strconv.Atoi(orderIDStr)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
+	}
+
+	if errorMsg := ctl.orderSvc.DeleteOrder(ctx, orderID); errorMsg != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": errorMsg.Error()})
+	}
+
+	return c.JSON(http.StatusOK, api.H{
+		"ok": "200",
+	})
+}
+
+// UpdateOrderEndpoint ...
+func (ctl *OrderController) UpdateOrderEndpoint(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	cParam := order.CreateOrderParams{}
+	err := c.Bind(&cParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
+	orderObject, err := ctl.orderSvc.UpdateOrder(ctx, cParam)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
+	}
+	return c.JSON(http.StatusCreated, api.H{
+		"data": orderObject,
+	})
+}

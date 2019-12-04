@@ -47,6 +47,8 @@ type Service interface {
 	GetGroupOrder(groupID string) (Order, error)
 	OrderList(ctx context.Context, params Params) ([]Order, error)
 	CreateOrder(ctx context.Context, createOrderparams CreateOrderParams) (Order, error)
+	UpdateOrder(ctx context.Context, createOrderparams CreateOrderParams) (Order, error)
+	DeleteOrder(ctx context.Context, orderID int) error
 }
 
 // Repository is a Order repo
@@ -55,4 +57,6 @@ type Repository interface {
 	GetGroupOrder(groupID string) (Order, error)
 	OrderList(ctx context.Context, params Params) ([]Order, error)
 	CreateOrder(ctx context.Context, order Order) (Order, error)
+	UpdateOrder(ctx context.Context, order Order) (Order, error)
+	DeleteOrder(ctx context.Context, orderID int) error
 }

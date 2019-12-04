@@ -11,7 +11,7 @@ type Menu struct {
 	Name      string    `gorm:"name" json:"name"`
 	StoreID   string    `gorm:"store_id" json:"store_id"`
 	Price     int8      `gorm:"price" json:"price"`
-	Size      int       `gorm:"size" json:"size"`
+	Size      string    `gorm:"size" json:"size"`
 	CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
 }

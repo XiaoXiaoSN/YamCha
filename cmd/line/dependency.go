@@ -24,6 +24,11 @@ import (
 	menuRepo "yamcha/pkg/api/menu/repository"
 	menuSvc "yamcha/pkg/api/menu/service"
 
+	pkgExtra "yamcha/pkg/api/extra"
+	extraCtl "yamcha/pkg/api/extra/controller"
+	extraRepo "yamcha/pkg/api/extra/repository"
+	extraSvc "yamcha/pkg/api/extra/service"
+
 	"yamcha/pkg/linebot"
 
 	pkgConfig "yamcha/internal/pkg/config"
@@ -53,6 +58,9 @@ var (
 
 	_menuRepo pkgMenu.Repository
 	_menuSvc  pkgMenu.Service
+
+	_extraRepo pkgExtra.Repository
+	_extraSvc  pkgExtra.Service
 )
 
 var middlewareCfg = middleware.CORSConfig{
@@ -115,12 +123,14 @@ func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 	_storeRepo = storeRepo.NewStoreRepository(db)
 	_orderRepo = orderRepo.NewOrderRepository(db)
 	_menuRepo = menuRepo.NewMenuRepository(db)
+	_extraRepo = extraRepo.NewExtraRepository(db)
 
 	// init Service
 	_userSvc = userSvc.NewUserService(_userRepo)
 	_storeSvc = storeSvc.NewStoreService(_storeRepo)
 	_orderSvc = orderSvc.NewOrderService(_orderRepo)
 	_menuSvc = menuSvc.NewMenuService(_menuRepo)
+	_extraSvc = extraSvc.NewExtraService(_extraRepo)
 
 	// regiest router
 	_userCtl := userCtl.NewUsercontroller(_userSvc)
@@ -134,6 +144,9 @@ func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 
 	_menuCtl := menuCtl.NewMenucontroller(_menuSvc)
 	menuCtl.SetRoutes(e, _menuCtl)
+
+	_extraCtl := extraCtl.NewExtracontroller(_extraSvc)
+	extraCtl.SetRoutes(e, _extraCtl)
 
 	return nil
 }

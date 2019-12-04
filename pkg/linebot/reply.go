@@ -1,6 +1,7 @@
 package linebot
 
 import (
+	"strconv"
 	"strings"
 
 	"github.com/line/line-bot-sdk-go/linebot"
@@ -214,8 +215,8 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 		// return err
 	} else {
 		// return selection menu
-
-		initMenuJSON := strings.Replace(initJSONData, "<orderID>", string(orderData.ID), -1)
+		// log.Println("orderID is", orderData.ID)
+		initMenuJSON := strings.Replace(initJSONData, "<orderID>", strconv.Itoa(orderData.ID), -1)
 
 		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(initMenuJSON)); err != nil {
 			log.Println("err:", err)
