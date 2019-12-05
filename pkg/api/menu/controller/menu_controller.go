@@ -26,7 +26,7 @@ func NewMenucontroller(menuSvc menu.Service) *MenuController {
 func (ctl MenuController) MenuListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("storeId")
+	storeIDStr := c.Param("branchStoreId")
 	log.Println(storeIDStr)
 	orderID, err := strconv.Atoi(storeIDStr)
 	if err != nil {

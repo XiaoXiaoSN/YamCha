@@ -8,5 +8,5 @@ import (
 func SetRoutes(engine *echo.Echo, menuCtl *MenuController) {
 	apiV1Group := engine.Group("/api/v1")
 
-	apiV1Group.GET("/menu/:storeId", menuCtl.MenuListEndpoint)
+	apiV1Group.GET("/menu/:branchStoreId", menuCtl.MenuListEndpoint)
 }

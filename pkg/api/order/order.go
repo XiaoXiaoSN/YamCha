@@ -17,14 +17,15 @@ const (
 
 // Order Object
 type Order struct {
-	ID        int             `gorm:"id" json:"id"`
-	Creator   string          `gorm:"creator_id" json:"creator"`
-	GroupID   string          `gorm:"group_id" json:"group_id"`
-	Status    int8            `gorm:"status" json:"status"`
-	Price     int             `gorm:"price" json:"price"`
-	Order     json.RawMessage `gorm:"order" json:"order"`
-	CreatedAt time.Time       `gorm:"created_at" json:"created_at"`
-	UpdatedAt time.Time       `gorm:"updated_at" json:"updated_at"`
+	ID            int             `gorm:"id" json:"id"`
+	Creator       string          `gorm:"creator_id" json:"creator"`
+	GroupID       string          `gorm:"group_id" json:"group_id"`
+	Status        int8            `gorm:"status" json:"status"`
+	Price         int             `gorm:"price" json:"price"`
+	BranchStoreID int             `gorm:"branch_store_id" json:"branch_store_id"`
+	Order         json.RawMessage `gorm:"order" json:"order"`
+	CreatedAt     time.Time       `gorm:"created_at" json:"created_at"`
+	UpdatedAt     time.Time       `gorm:"updated_at" json:"updated_at"`
 }
 
 // Params for filter order list

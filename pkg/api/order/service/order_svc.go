@@ -22,10 +22,11 @@ func NewOrderService(orderRepo order.Repository) order.Service {
 // CreateOrder ...
 func (svc *OrderService) CreateOrder(ctx context.Context, cParams order.CreateOrderParams) (order.Order, error) {
 	orderObject := order.Order{
-		GroupID: cParams.GroupID,
-		Creator: cParams.CreatorID,
-		Price:   0,
-		Status:  order.StatusOrderOpen,
+		GroupID:       cParams.GroupID,
+		Creator:       cParams.CreatorID,
+		BranchStoreID: cParams.BranchStoreID,
+		Price:         0,
+		Status:        order.StatusOrderOpen,
 	}
 
 	return svc.OrderRepo.CreateOrder(ctx, orderObject)
