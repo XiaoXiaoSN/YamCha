@@ -8,5 +8,5 @@ import (
 func SetRoutes(engine *echo.Echo, extraCtl *ExtraController) {
 	apiV1Group := engine.Group("/api/v1")
 
-	apiV1Group.GET("/extra/:storeId", extraCtl.ExtraListEndpoint)
+	apiV1Group.GET("/extra/:branchStoreId", extraCtl.ExtraListEndpoint)
 }

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"yamcha/pkg/api"
@@ -104,6 +105,7 @@ func (ctl *OrderController) UpdateOrderEndpoint(c echo.Context) error {
 
 	cParam := order.CreateOrderParams{}
 	err := c.Bind(&cParam)
+	log.Println(cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}

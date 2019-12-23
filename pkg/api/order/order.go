@@ -2,7 +2,6 @@ package order
 
 import (
 	"context"
-	"encoding/json"
 	"time"
 )
 
@@ -23,7 +22,7 @@ type Order struct {
 	Status        int8            `gorm:"status" json:"status"`
 	Price         int             `gorm:"price" json:"price"`
 	BranchStoreID int             `gorm:"branch_store_id" json:"branch_store_id"`
-	Order         json.RawMessage `gorm:"order" json:"order"`
+	Order         []PersonalOrder `gorm:"order" json:"order"`
 	CreatedAt     time.Time       `gorm:"created_at" json:"created_at"`
 	UpdatedAt     time.Time       `gorm:"updated_at" json:"updated_at"`
 }
@@ -34,12 +33,22 @@ type Params struct {
 	GroupID   *string `json:"group_id" query:"group_id" form:"group_id"`
 }
 
+// PersonalOrder ...
+type PersonalOrder struct {
+	UserID    string `gorm:"user" form:"user" json:"user"`
+	ProdustID string `gorm:"product" form:"product" json:"product"`
+	Size      string `gorm:"size" form:"size" json:"size"`
+	Sweet     string `gorm:"sweet" form:"sweet" json:"sweet"`
+	Ice       string `gorm:"ice" form:"ice" json:"ice"`
+	Price     string `gorm:"price" form:"price" json:"price"`
+}
+
 // CreateOrderParams for create a new order
 type CreateOrderParams struct {
 	CreatorID     string          `gorm:"creator_id" form:"creator_id" json:"creator_id"`
 	GroupID       string          `gorm:"group_id" form:"group_id" json:"group_id"`
 	BranchStoreID int             `gorm:"branch_store_id" form:"branch_store_id" json:"branch_store_id"`
-	Order         json.RawMessage `gorm:"order" json:"order"`
+	Order         []PersonalOrder `gorm:"order" json:"order"`
 }
 
 // Service is a Order service

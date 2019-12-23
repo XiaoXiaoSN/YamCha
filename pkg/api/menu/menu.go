@@ -12,6 +12,7 @@ type BranchStore struct {
 	StoreGroupID string    `gorm:"store_group_id" json:"store_group_id"`
 	Address      string    `gorm:"address" json:"address"`
 	Size         string    `gorm:"size" json:"size"`
+	ImgURI       string    `gorm:"img_uri" json:"img_uri"`
 	CreatedAt    time.Time `gorm:"created_at" json:"created_at"`
 	UpdatedAt    time.Time `gorm:"updated_at" json:"updated_at"`
 }
@@ -23,6 +24,7 @@ type Menu struct {
 	StoreID   string    `gorm:"store_id" json:"store_id"`
 	Price     int8      `gorm:"price" json:"price"`
 	Size      string    `gorm:"size" json:"size"`
+	ImgURI    string    `gorm:"img_uri" json:"img_uri"`
 	CreatedAt time.Time `gorm:"created_at" json:"created_at"`
 	UpdatedAt time.Time `gorm:"updated_at" json:"updated_at"`
 }

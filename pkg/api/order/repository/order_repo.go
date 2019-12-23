@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"yamcha/pkg/api/order"
 
 	"github.com/jinzhu/gorm"
@@ -23,7 +22,7 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 
 // CreateOrder ...
 func (repo *OrderRepository) CreateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
-	newOrder.Order = json.RawMessage("[]")
+	newOrder.Order = []order.PersonalOrder{}
 	err := repo.db.Model(&order.Order{}).Create(&newOrder).Error
 	if err != nil {
 		return order.Order{}, err
@@ -91,6 +90,7 @@ func (repo *OrderRepository) DeleteOrder(ctx context.Context, orderID int) error
 
 // UpdateOrder ...
 func (repo *OrderRepository) UpdateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
+	log.Println(newOrder)
 	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", newOrder.ID).Update("order", newOrder.Order).Error
 	if err != nil {
 		return order.Order{}, err

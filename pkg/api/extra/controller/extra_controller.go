@@ -24,7 +24,7 @@ func NewExtracontroller(extraSvc extra.Service) *ExtraController {
 func (ctl ExtraController) ExtraListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("storeId")
+	storeIDStr := c.Param("branchStoreId")
 	orderID, err := strconv.Atoi(storeIDStr)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})

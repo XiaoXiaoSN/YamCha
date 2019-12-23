@@ -53,13 +53,14 @@ func (svc *OrderService) DeleteOrder(ctx context.Context, orderID int) error {
 	return svc.OrderRepo.DeleteOrder(ctx, orderID)
 }
 
-// UpdateOrder
+// UpdateOrder ...
 func (svc *OrderService) UpdateOrder(ctx context.Context, cParams order.CreateOrderParams) (order.Order, error) {
 	orderObject := order.Order{
 		GroupID: cParams.GroupID,
 		Creator: cParams.CreatorID,
 		Price:   0,
 		Status:  order.StatusOrderOpen,
+		Order:   cParams.Order,
 	}
 	return svc.OrderRepo.UpdateOrder(ctx, orderObject)
 }
