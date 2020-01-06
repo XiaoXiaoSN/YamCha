@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	"database/sql"
 	"time"
 )
 
@@ -35,12 +36,12 @@ type Params struct {
 
 // PersonalOrder ...
 type PersonalOrder struct {
-	UserID    string `gorm:"user" form:"user" json:"user"`
-	ProdustID string `gorm:"product" form:"product" json:"product"`
-	Size      string `gorm:"size" form:"size" json:"size"`
-	Sweet     string `gorm:"sweet" form:"sweet" json:"sweet"`
-	Ice       string `gorm:"ice" form:"ice" json:"ice"`
-	Price     string `gorm:"price" form:"price" json:"price"`
+	UserID    sql.NullString `gorm:"user" form:"user" json:"user"`
+	ProdustID sql.NullString `gorm:"product" form:"product" json:"product"`
+	Size      sql.NullString `gorm:"size" form:"size" json:"size"`
+	Sweet     sql.NullString `gorm:"sweet" form:"sweet" json:"sweet"`
+	Ice       sql.NullString `gorm:"ice" form:"ice" json:"ice"`
+	Price     sql.NullString `gorm:"price" form:"price" json:"price"`
 }
 
 // CreateOrderParams for create a new order

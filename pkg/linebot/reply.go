@@ -93,7 +93,7 @@ var initJSONData = `{
         "action": {
           "type": "uri",
           "label": "刪除訂單",
-          "uri": "https://www.google.com"
+          "uri": "line://app/1653300700-8oZJRmQW?order=<orderID>"
         }
       },
       {
@@ -186,13 +186,17 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	return nil
 }
 
+func (app *YamchaLineBot) replyDeleteConfirm(replyToken string, groupID string) error {
+	if _, err := app.bot.ReplyMessage(
+		replyToken,
+		linebot.NewTextMessage("確定刪除訂單？"),
+	).Do(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
-	// log.Println("reply token in replyFlex:", replyToken)
-	// log.Println("groupID:", groupID)
-
-	// check if order exists from db
-	// log.Println("service", app.orderSvc)
-
 	//  check if order exists
 	if orderData, errMsg := app.orderSvc.GetGroupOrder(groupID); errMsg != nil {
 
@@ -212,10 +216,7 @@ func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
 			log.Println("reply text err:", errorMsg)
 			return errorMsg
 		}
-		// return err
 	} else {
-		// return selection menu
-		// log.Println("orderID is", orderData.ID)
 		initMenuJSON := strings.Replace(initJSONData, "<orderID>", strconv.Itoa(orderData.ID), -1)
 
 		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(initMenuJSON)); err != nil {
