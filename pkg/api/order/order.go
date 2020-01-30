@@ -2,7 +2,7 @@ package order
 
 import (
 	"context"
-	"database/sql"
+	"encoding/json"
 	"time"
 )
 
@@ -23,25 +23,26 @@ type Order struct {
 	Status        int8            `gorm:"status" json:"status"`
 	Price         int             `gorm:"price" json:"price"`
 	BranchStoreID int             `gorm:"branch_store_id" json:"branch_store_id"`
-	Order         []PersonalOrder `gorm:"order" json:"order"`
+	Order         json.RawMessage `gorm:"order" json:"order,omitempty"`
 	CreatedAt     time.Time       `gorm:"created_at" json:"created_at"`
 	UpdatedAt     time.Time       `gorm:"updated_at" json:"updated_at"`
+	OrderStruct   []PersonalOrder
 }
 
 // Params for filter order list
 type Params struct {
-	CreatorID *int    `json:"creator_id" query:"creator_id" form:"creator_id"`
+	CreatorID *string `json:"creator_id" query:"creator_id" form:"creator_id"`
 	GroupID   *string `json:"group_id" query:"group_id" form:"group_id"`
 }
 
 // PersonalOrder ...
 type PersonalOrder struct {
-	UserID    sql.NullString `gorm:"user" form:"user" json:"user"`
-	ProdustID sql.NullString `gorm:"product" form:"product" json:"product"`
-	Size      sql.NullString `gorm:"size" form:"size" json:"size"`
-	Sweet     sql.NullString `gorm:"sweet" form:"sweet" json:"sweet"`
-	Ice       sql.NullString `gorm:"ice" form:"ice" json:"ice"`
-	Price     sql.NullString `gorm:"price" form:"price" json:"price"`
+	UserID    string `gorm:"user" form:"user" json:"user"`
+	ProductID string `gorm:"product" form:"product" json:"product"`
+	Size      string `gorm:"size" form:"size" json:"size"`
+	Sweet     string `gorm:"sweet" form:"sweet" json:"sweet"`
+	Ice       string `gorm:"ice" form:"ice" json:"ice"`
+	Price     string `gorm:"price" form:"price" json:"price"`
 }
 
 // CreateOrderParams for create a new order
@@ -60,6 +61,7 @@ type Service interface {
 	CreateOrder(ctx context.Context, createOrderparams CreateOrderParams) (Order, error)
 	UpdateOrder(ctx context.Context, createOrderparams CreateOrderParams) (Order, error)
 	DeleteOrder(ctx context.Context, orderID int) error
+	FinishOrder(groupID string) ([]PersonalOrder, error)
 }
 
 // Repository is a Order repo
@@ -70,4 +72,5 @@ type Repository interface {
 	CreateOrder(ctx context.Context, order Order) (Order, error)
 	UpdateOrder(ctx context.Context, order Order) (Order, error)
 	DeleteOrder(ctx context.Context, orderID int) error
+	FinishOrder(groupID string) ([]PersonalOrder, error)
 }

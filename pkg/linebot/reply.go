@@ -46,6 +46,7 @@ const (
 //     Contents Button[]
 //   } `json:"body"`
 // }
+
 var initJSONData = `{
   "type": "bubble",
   "hero": {
@@ -81,9 +82,9 @@ var initJSONData = `{
         "style": "link",
         "height": "sm",
         "action": {
-          "type": "uri",
-          "label": "查詢訂單",
-          "uri": "https://linecorp.com"
+          "type": "message",
+          "label": "完成訂單",
+          "text": "Yamcha完成訂單"
         }
       },
       {
@@ -173,6 +174,126 @@ var progressMenuString = `{
     "flex": 0
   }
 }`
+var finalListString = `
+{
+  "type": "bubble",
+  "hero": {
+    "type": "image",
+    "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+    "size": "full",
+    "aspectRatio": "20:13",
+    "aspectMode": "cover",
+    "action": {
+      "type": "uri",
+      "uri": "http://linecorp.com/"
+    }
+  },
+  "body": {
+    "type": "box",
+    "layout": "vertical",
+    "contents": [
+      {
+        "type": "text",
+        "text": "訂單結果",
+        "weight": "bold",
+        "size": "xl"
+      },
+      <list_string_section>,
+      {
+        "type": "separator",
+        "margin": "xxl"
+      },
+      {
+        "type": "box",
+        "layout": "vertical",
+        "margin": "lg",
+        "spacing": "sm",
+        "contents": [
+          {
+            "type": "box",
+            "layout": "baseline",
+            "spacing": "sm",
+            "contents": [
+              {
+                "type": "spacer"
+              },
+              {
+                "type": "text",
+                "text": "總計",
+                "size": "lg",
+                "flex": "1",
+                "color": "#666666",
+                "align": "start"
+              },
+              {
+                "type": "text",
+                "text": "$150",
+                "size": "lg",
+                "flex": "1",
+                "align": "end"
+              },
+              {
+                "type": "spacer"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}`
+
+var listString = `
+{
+  "type": "box",
+  "layout": "vertical",
+  "margin": "lg",
+  "spacing": "sm",
+  "contents": [
+    {
+      "type": "box",
+      "layout": "baseline",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "text",
+          "text": <user>,
+          "size": "sm",
+          "flex": "2",
+          "color": "#666666",
+          "align": "start"
+        },
+        {
+          "type": "text",
+          "text": <product>,
+          "wrap": "true",
+          "color": "#666666",
+          "size": "sm",
+          "flex": "3",
+          "margin": "xxl",
+          "align": "center"
+        },
+        {
+          "type": "text",
+          "text": <options>,
+          "wrap": "true",
+          "color": "#666666",
+          "size": "sm",
+          "flex": "3",
+          "margin": "xxl",
+          "align": "start"
+        },
+        {
+          "type": "text",
+          "text": <price>,
+          "size": "sm",
+          "flex": "1",
+          "align": "end"
+        }
+      ]
+    }
+  ]
+}`
 
 // TODO: 允許複數個 text
 func (app *YamchaLineBot) replyText(replyToken, text string) error {
@@ -186,13 +307,42 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 	return nil
 }
 
-func (app *YamchaLineBot) replyDeleteConfirm(replyToken string, groupID string) error {
-	if _, err := app.bot.ReplyMessage(
-		replyToken,
-		linebot.NewTextMessage("確定刪除訂單？"),
-	).Do(); err != nil {
-		return err
+func (app *YamchaLineBot) replyFinishConfirm(replyToken string, groupID string) error {
+
+	if listItem, errMsg := app.orderSvc.FinishOrder(groupID); errMsg != nil {
+		if _, err := app.bot.ReplyMessage(
+			replyToken,
+			linebot.NewTextMessage("查詢錯誤: 目前沒有可結帳之訂單"),
+		).Do(); err != nil {
+			return err
+		}
+	} else {
+		log.Println(listItem)
+		arrayString := []string{}
+		for _, order := range listItem {
+			replacer := strings.NewReplacer("<user>", `"伍冠宇"`, "<product>", `"`+string(order.ProductID)+`"`, "<options>", `""`, "<price>", `"`+string(order.Price)+`"`)
+			newString := replacer.Replace(listString)
+			arrayString = append(arrayString, newString)
+		}
+		returnListString := strings.Join(arrayString, ",")
+
+		finishJSON := strings.Replace(finalListString, "<list_string_section>", returnListString, -1)
+		log.Println("finishJSON")
+		log.Println(finishJSON)
+
+		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(finishJSON)); err != nil {
+			log.Println("err:", err)
+			return err
+		} else if _, errorMsg := app.bot.ReplyMessage(
+			replyToken,
+			linebot.NewFlexMessage("alt message", container),
+		).Do(); errorMsg != nil {
+			log.Println("reply token:", replyToken)
+			log.Println("reply text err:", errorMsg)
+			return errorMsg
+		}
 	}
+
 	return nil
 }
 

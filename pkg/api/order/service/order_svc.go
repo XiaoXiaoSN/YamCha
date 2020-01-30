@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"yamcha/pkg/api/order"
 
 	log "github.com/sirupsen/logrus"
@@ -26,6 +27,7 @@ func (svc *OrderService) CreateOrder(ctx context.Context, cParams order.CreateOr
 		Creator:       cParams.CreatorID,
 		BranchStoreID: cParams.BranchStoreID,
 		Price:         0,
+		Order:         []byte("{}"),
 		Status:        order.StatusOrderOpen,
 	}
 
@@ -55,12 +57,18 @@ func (svc *OrderService) DeleteOrder(ctx context.Context, orderID int) error {
 
 // UpdateOrder ...
 func (svc *OrderService) UpdateOrder(ctx context.Context, cParams order.CreateOrderParams) (order.Order, error) {
+	stringJSON, _ := json.Marshal(cParams.Order)
 	orderObject := order.Order{
 		GroupID: cParams.GroupID,
 		Creator: cParams.CreatorID,
 		Price:   0,
 		Status:  order.StatusOrderOpen,
-		Order:   cParams.Order,
+		Order:   []byte(stringJSON),
 	}
 	return svc.OrderRepo.UpdateOrder(ctx, orderObject)
+}
+
+// FinishOrder ...
+func (svc *OrderService) FinishOrder(groupID string) ([]order.PersonalOrder, error) {
+	return svc.OrderRepo.FinishOrder(groupID)
 }

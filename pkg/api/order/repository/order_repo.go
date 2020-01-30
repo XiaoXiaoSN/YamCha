@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"yamcha/pkg/api/order"
 
 	"github.com/jinzhu/gorm"
@@ -22,7 +23,7 @@ func NewOrderRepository(db *gorm.DB) order.Repository {
 
 // CreateOrder ...
 func (repo *OrderRepository) CreateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
-	newOrder.Order = []order.PersonalOrder{}
+	log.Println(newOrder)
 	err := repo.db.Model(&order.Order{}).Create(&newOrder).Error
 	if err != nil {
 		return order.Order{}, err
@@ -81,7 +82,7 @@ func (repo *OrderRepository) OrderList(ctx context.Context, params order.Params)
 // DeleteOrder ...
 func (repo *OrderRepository) DeleteOrder(ctx context.Context, orderID int) error {
 	// orderObject := order.Order{}
-	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", orderID).Update("status", 2).Error
+	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", orderID).Update("status", order.StatusOrderClose).Error
 	if err != nil {
 		return err
 	}
@@ -92,10 +93,30 @@ func (repo *OrderRepository) DeleteOrder(ctx context.Context, orderID int) error
 // UpdateOrder ...
 func (repo *OrderRepository) UpdateOrder(ctx context.Context, newOrder order.Order) (order.Order, error) {
 	log.Println(newOrder)
-	err := repo.db.Model(&order.Order{}).Where("id = ? AND status = 1", newOrder.ID).Update("order", newOrder.Order).Error
+	err := repo.db.Model(&order.Order{}).Where("group_id = ? AND status = 1", newOrder.GroupID).Update("order", newOrder.Order).Error
 	if err != nil {
 		return order.Order{}, err
 	}
 
 	return newOrder, nil
+}
+
+// FinishOrder ...
+func (repo *OrderRepository) FinishOrder(groupID string) ([]order.PersonalOrder, error) {
+	orderList := order.Order{}
+	err := repo.db.Model(&order.Order{}).Where("group_id = ? AND status = 1", groupID).Find(&orderList).Update("status", order.StatusOrderEnd).Error
+
+	personalOrders := make([]order.PersonalOrder, 0)
+	json.Unmarshal(orderList.Order, &personalOrders)
+
+	log.Println("orderStruct")
+	log.Println(personalOrders)
+
+	orderList.OrderStruct = personalOrders
+
+	if err != nil {
+		return []order.PersonalOrder{}, err
+	}
+
+	return personalOrders, err
 }

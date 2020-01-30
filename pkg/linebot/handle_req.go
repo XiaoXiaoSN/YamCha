@@ -26,8 +26,8 @@ func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken st
 		// 	).Do(); err != nil {
 		// 		return err
 		// 	}
-	case "Yamcha刪除訂單":
-		_ = app.deleteConfirm(replyToken, source)
+	case "Yamcha完成訂單":
+		_ = app.finishConfirm(replyToken, source)
 	case "成功了！":
 		if _, err := app.bot.ReplyMessage(
 			replyToken,
@@ -50,8 +50,8 @@ func (app *YamchaLineBot) handleSticker(message *linebot.StickerMessage, replyTo
 	return nil
 }
 
-func (app *YamchaLineBot) deleteConfirm(replyToken string, source *linebot.EventSource) error {
-	if err := app.replyDeleteConfirm(replyToken, source.GroupID); err != nil {
+func (app *YamchaLineBot) finishConfirm(replyToken string, source *linebot.EventSource) error {
+	if err := app.replyFinishConfirm(replyToken, source.GroupID); err != nil {
 		return err
 	}
 	return nil
