@@ -221,7 +221,7 @@ var finalListString = `
                 "type": "text",
                 "text": "總計",
                 "size": "lg",
-                "flex": "1",
+                "flex": 1,
                 "color": "#666666",
                 "align": "start"
               },
@@ -229,7 +229,7 @@ var finalListString = `
                 "type": "text",
                 "text": "$150",
                 "size": "lg",
-                "flex": "1",
+                "flex": 1,
                 "align": "end"
               },
               {
@@ -259,27 +259,27 @@ var listString = `
           "type": "text",
           "text": <user>,
           "size": "sm",
-          "flex": "2",
+          "flex": 2,
           "color": "#666666",
           "align": "start"
         },
         {
           "type": "text",
           "text": <product>,
-          "wrap": "true",
+          "wrap": true,
           "color": "#666666",
           "size": "sm",
-          "flex": "3",
+          "flex": 3,
           "margin": "xxl",
           "align": "center"
         },
         {
           "type": "text",
           "text": <options>,
-          "wrap": "true",
+          "wrap": true,
           "color": "#666666",
           "size": "sm",
-          "flex": "3",
+          "flex": 3,
           "margin": "xxl",
           "align": "start"
         },
@@ -287,7 +287,7 @@ var listString = `
           "type": "text",
           "text": <price>,
           "size": "sm",
-          "flex": "1",
+          "flex": 1,
           "align": "end"
         }
       ]
@@ -320,7 +320,7 @@ func (app *YamchaLineBot) replyFinishConfirm(replyToken string, groupID string) 
 		log.Println(listItem)
 		arrayString := []string{}
 		for _, order := range listItem {
-			replacer := strings.NewReplacer("<user>", `"伍冠宇"`, "<product>", `"`+string(order.ProductID)+`"`, "<options>", `""`, "<price>", `"`+string(order.Price)+`"`)
+			replacer := strings.NewReplacer("<user>", `"伍冠宇"`, "<product>", `"`+string(order.ProductID)+`"`, "<options>", `"empty"`, "<price>", `"`+string(order.Price)+`"`)
 			newString := replacer.Replace(listString)
 			arrayString = append(arrayString, newString)
 		}
