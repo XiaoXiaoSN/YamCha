@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	pkgUser "yamcha/pkg/api/user"
 	userCtl "yamcha/pkg/api/user/controller"
@@ -113,16 +114,16 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 		DefaultBodyDumpConfig := middleware.BodyDumpConfig{
 			Skipper: middleware.DefaultSkipper,
 			Handler: func(c echo.Context, reqBody, resBody []byte) {
-				reqContentType := c.Request().Header.Get(echo.HeaderContentType)
-				if reqContentType == echo.MIMEApplicationJSON || reqContentType == echo.MIMEApplicationJSONCharsetUTF8 {
+				// handle request body
+				if isJSONContent(c.Request().Header.Get(echo.HeaderContentType)) {
 					var prettyJSON bytes.Buffer
 					err := json.Indent(&prettyJSON, reqBody, "", "    ")
 					if err == nil {
 						reqBody = prettyJSON.Bytes()
 					}
 				}
-				respContentType := c.Response().Header().Get(echo.HeaderContentType)
-				if respContentType == echo.MIMEApplicationJSON || respContentType == echo.MIMEApplicationJSONCharsetUTF8 {
+				// handle response body
+				if isJSONContent(c.Response().Header().Get(echo.HeaderContentType)) {
 					var prettyJSON bytes.Buffer
 					err := json.Indent(&prettyJSON, resBody, "", "    ")
 					if err == nil {
@@ -190,4 +191,18 @@ func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 	extraCtl.SetRoutes(e, _extraCtl)
 
 	return nil
+}
+
+func isJSONContent(headerContentType string) bool {
+	headerContentType = strings.ToUpper(headerContentType)
+	allowList := []string{
+		strings.ToUpper(echo.MIMEApplicationJSON),
+		strings.ToUpper(echo.MIMEApplicationJSONCharsetUTF8),
+	}
+	for i := range allowList {
+		if headerContentType == allowList[i] {
+			return true
+		}
+	}
+	return false
 }
