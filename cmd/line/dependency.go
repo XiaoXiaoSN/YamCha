@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -111,6 +113,22 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 		DefaultBodyDumpConfig := middleware.BodyDumpConfig{
 			Skipper: middleware.DefaultSkipper,
 			Handler: func(c echo.Context, reqBody, resBody []byte) {
+				reqContentType := c.Request().Header.Get(echo.HeaderContentType)
+				if reqContentType == echo.MIMEApplicationJSON || reqContentType == echo.MIMEApplicationJSONCharsetUTF8 {
+					var prettyJSON bytes.Buffer
+					err := json.Indent(&prettyJSON, reqBody, "", "    ")
+					if err == nil {
+						reqBody = prettyJSON.Bytes()
+					}
+				}
+				respContentType := c.Response().Header().Get(echo.HeaderContentType)
+				if respContentType == echo.MIMEApplicationJSON || respContentType == echo.MIMEApplicationJSONCharsetUTF8 {
+					var prettyJSON bytes.Buffer
+					err := json.Indent(&prettyJSON, resBody, "", "    ")
+					if err == nil {
+						resBody = prettyJSON.Bytes()
+					}
+				}
 				fmt.Printf("request:  %s\nresponse: %s\n\n", reqBody, resBody)
 			},
 		}
