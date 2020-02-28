@@ -49,7 +49,7 @@ func (repo *OrderRepository) GetGroupOrder(groupID string) (order.Order, error) 
 	orderObject := order.Order{}
 	log.Println("GroupId", groupID)
 	err := repo.db.Model(&order.Order{}).Where("group_id = ? AND status = 1", groupID).First(&orderObject).Error
-	log.Println("GroupId", orderObject)
+	log.Printf("GroupId %+v", orderObject)
 	if err != nil {
 		return order.Order{}, err
 	}
