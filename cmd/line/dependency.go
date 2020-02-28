@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
@@ -102,8 +103,30 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 		return err
 	}
 
-	// register restful API
+	// register echo middleware
 	e.Use(middleware.CORSWithConfig(middlewareCfg))
+
+	if cfg.Env != "production" {
+		// log http request body and response body
+		DefaultBodyDumpConfig := middleware.BodyDumpConfig{
+			Skipper: middleware.DefaultSkipper,
+			Handler: func(c echo.Context, reqBody, resBody []byte) {
+				fmt.Printf("request:  %s\nresponse: %s\n\n", reqBody, resBody)
+			},
+		}
+		e.Use(middleware.BodyDumpWithConfig(DefaultBodyDumpConfig))
+
+		// log http request status
+		DefaultLoggerConfig := middleware.LoggerConfig{
+			Skipper:          middleware.DefaultSkipper,
+			Format:           "${time_custom} ${status} ${method} ${path} (${latency_human})\n",
+			CustomTimeFormat: "2006-01-02 15:04:05",
+			Output:           os.Stdout,
+		}
+		e.Use(middleware.LoggerWithConfig(DefaultLoggerConfig))
+	}
+
+	// register restful API
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
@@ -132,7 +155,7 @@ func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 	_menuSvc = menuSvc.NewMenuService(_menuRepo)
 	_extraSvc = extraSvc.NewExtraService(_extraRepo)
 
-	// regiest router
+	// register router
 	_userCtl := userCtl.NewUsercontroller(_userSvc)
 	userCtl.SetRoutes(e, _userCtl)
 
