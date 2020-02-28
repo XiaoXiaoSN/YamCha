@@ -7,12 +7,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// MenuRepository implment a menu Repository
+// MenuRepository implement a menu Repository
 type MenuRepository struct {
 	db *gorm.DB
 }
 
-// NewMenuRepository make a menu Repositoryr
+// NewMenuRepository make a menu Repository
 func NewMenuRepository(db *gorm.DB) menu.Repository {
 	return &MenuRepository{
 		db: db,
@@ -29,7 +29,7 @@ func (repo *MenuRepository) GetMenuList(ctx context.Context, branchStoreID int) 
 		return []menu.Menu{}, errorMsg
 	}
 	// log.Println(branchStoreObject.StoreID)
-	// search eveything with store id
+	// search everything with store id
 	err := repo.db.Model(&menu.Menu{}).Where("store_id = ?", branchStoreObject.StoreGroupID).Find(&menuObject).Error
 	if err != nil {
 		return []menu.Menu{}, err

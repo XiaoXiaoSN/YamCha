@@ -5,7 +5,7 @@ import (
 	"yamcha/pkg/api/extra"
 )
 
-// ExtraService implment a extra service
+// ExtraService implement a extra service
 type ExtraService struct {
 	ExtraRepo extra.Repository
 }

@@ -1,5 +1,7 @@
 # LINE BOT - yamcha
 
+[![Build Status](https://travis-ci.org/XiaoXiaoSN/YamCha.svg?branch=master)](https://travis-ci.org/XiaoXiaoSN/YamCha)
+
 ## Getting Start
 ```
 make init

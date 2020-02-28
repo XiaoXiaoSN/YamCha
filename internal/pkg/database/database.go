@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cenk/backoff"
 	pkgConfig "yamcha/internal/pkg/config"
 
+	"github.com/cenk/backoff"
 	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
 )

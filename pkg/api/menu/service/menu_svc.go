@@ -5,7 +5,7 @@ import (
 	"yamcha/pkg/api/menu"
 )
 
-// MenuService implment a menu service
+// MenuService implement a menu service
 type MenuService struct {
 	MenuRepo menu.Repository
 }

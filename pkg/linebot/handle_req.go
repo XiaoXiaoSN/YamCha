@@ -61,7 +61,7 @@ func (app *YamchaLineBot) wakeUp(message *linebot.TextMessage, replyToken string
 	log.Printf("Yamcha wakeup in group: %s", source.GroupID)
 
 	// value := app.orderSvc.GetInt(source.GroupID + "Status")
-	// if value == StatusYamchaSeelp {
+	// if value == StatusYamchaSleep {
 	// err := app.orderSvc.Set(source.GroupID+"Status", 1)
 	// if err != nil {
 	// 	return err
@@ -81,7 +81,7 @@ func (app *YamchaLineBot) wakeUp(message *linebot.TextMessage, replyToken string
 	// 		return err
 	// 	}
 	// } else {
-	// 	return ErrUnknow
+	// 	return ErrUnknown
 	// }
 
 	return nil

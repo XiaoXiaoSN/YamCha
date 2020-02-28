@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-
 	"os"
 	"os/signal"
 	"time"
@@ -21,7 +20,7 @@ func main() {
 	e := echo.New()
 	err := initService(e, cfg)
 	if err != nil {
-		log.Panicln("failed to regiest Restful API...")
+		log.Panicln("failed to register Restful API...")
 		return
 	}
 

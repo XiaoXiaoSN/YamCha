@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// SetRoutes regiester orders api
+// SetRoutes register orders api
 func SetRoutes(engine *echo.Echo, orderCtl *OrderController) {
 	apiV1Group := engine.Group("/api/v1")
 

@@ -8,12 +8,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// ExtraRepository implment a extra Repository
+// ExtraRepository implement a extra Repository
 type ExtraRepository struct {
 	db *gorm.DB
 }
 
-// NewExtraRepository make a extra Repositoryr
+// NewExtraRepository make a extra Repository
 func NewExtraRepository(db *gorm.DB) extra.Repository {
 	return &ExtraRepository{
 		db: db,
@@ -31,7 +31,7 @@ func (repo *ExtraRepository) GetExtraList(ctx context.Context, branchStoreID int
 		return []extra.Extra{}, errorMsg
 	}
 
-	// search eveything with store id
+	// search everything with store id
 	err := repo.db.Model(&extra.Extra{}).Where("store_id = ?", branchStoreObject.StoreGroupID).Find(&extraArray).Error
 	if err != nil {
 		return []extra.Extra{}, err

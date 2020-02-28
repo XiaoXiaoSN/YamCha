@@ -102,7 +102,7 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 		return err
 	}
 
-	// regiest restful API
+	// register restful API
 	e.Use(middleware.CORSWithConfig(middlewareCfg))
 	e.GET("/", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Hello, World!")

@@ -5,7 +5,7 @@ import (
 	"yamcha/pkg/api/user"
 )
 
-// UserService implment a user service
+// UserService implement a user service
 type UserService struct {
 	UserRepo user.Repository
 }

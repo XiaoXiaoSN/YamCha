@@ -7,12 +7,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// UserRepository implment a user Repository
+// UserRepository implement a user Repository
 type UserRepository struct {
 	db *gorm.DB
 }
 
-// NewUserRepository make a user Repositoryr
+// NewUserRepository make a user Repository
 func NewUserRepository(db *gorm.DB) user.Repository {
 	return &UserRepository{
 		db: db,

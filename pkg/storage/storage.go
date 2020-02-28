@@ -7,7 +7,7 @@ type Storage interface {
 	GetInt(key string) int
 }
 
-// Memory is a golang process memory value stague
+// Memory is a golang process memory value storage
 type Memory struct {
 	Data map[string]interface{}
 }

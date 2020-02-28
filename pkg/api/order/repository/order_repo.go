@@ -9,12 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// OrderRepository implment a order Repository
+// OrderRepository implement a order Repository
 type OrderRepository struct {
 	db *gorm.DB
 }
 
-// NewOrderRepository make a order Repositoryr
+// NewOrderRepository make a order Repository
 func NewOrderRepository(db *gorm.DB) order.Repository {
 	return &OrderRepository{
 		db: db,

@@ -8,12 +8,12 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-// StoreRepository implment a user Repository
+// StoreRepository implement a user Repository
 type StoreRepository struct {
 	db *gorm.DB
 }
 
-// NewStoreRepository make a user Repositoryr
+// NewStoreRepository make a user Repository
 func NewStoreRepository(db *gorm.DB) store.Repository {
 	return &StoreRepository{
 		db: db,
@@ -36,7 +36,7 @@ func (repo *StoreRepository) GetStore(ctx context.Context, storeID int) (store.S
 
 	err := repo.db.Model(&store.Store{}).Preload("BranchStores").Find(&targetStore).Error
 	if err != nil {
-		// TODO: handle mysql 1602 duplicat error (should return http status 404)
+		// TODO: handle mysql 1602 duplicate error (should return http status 404)
 		return store.Store{}, err
 	}
 

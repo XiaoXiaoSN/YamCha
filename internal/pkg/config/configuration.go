@@ -3,12 +3,10 @@ package config
 import (
 	"flag"
 	"io/ioutil"
-
 	"os"
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
-
 	"gopkg.in/yaml.v2"
 )
 

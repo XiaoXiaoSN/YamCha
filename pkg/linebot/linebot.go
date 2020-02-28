@@ -17,8 +17,8 @@ const (
 )
 
 var (
-	// ErrUnknow define a Unknow Error
-	ErrUnknow = errors.New("Unknow Error")
+	// ErrUnknown define a Unknown Error
+	ErrUnknown = errors.New("Unknown Error")
 )
 
 // LineBot define basic line bot interface

@@ -5,7 +5,7 @@ import (
 	"yamcha/pkg/api/store"
 )
 
-// StoreService implment a user service
+// StoreService implement a user service
 type StoreService struct {
 	StoreRepo store.Repository
 }
@@ -18,8 +18,8 @@ func NewStoreService(storeRepo store.Repository) store.Service {
 }
 
 // CreateStore ...
-func (svc *StoreService) CreateStore(ctx context.Context, tragetStore store.Store) (store.Store, error) {
-	return svc.StoreRepo.CreateStore(ctx, tragetStore)
+func (svc *StoreService) CreateStore(ctx context.Context, targetStore store.Store) (store.Store, error) {
+	return svc.StoreRepo.CreateStore(ctx, targetStore)
 }
 
 // GetStore ...

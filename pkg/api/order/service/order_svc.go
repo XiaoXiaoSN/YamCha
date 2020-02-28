@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// OrderService implment a order service
+// OrderService implement a order service
 type OrderService struct {
 	OrderRepo order.Repository
 }
