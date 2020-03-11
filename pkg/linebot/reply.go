@@ -227,7 +227,7 @@ var finalListString = `
               },
               {
                 "type": "text",
-                "text": "$150",
+                "text": "$ <total>",
                 "size": "lg",
                 "flex": 1,
                 "align": "end"
@@ -257,7 +257,7 @@ var listString = `
       "contents": [
         {
           "type": "text",
-          "text": <user>,
+          "text": "<user>",
           "size": "sm",
           "flex": 2,
           "color": "#666666",
@@ -265,7 +265,7 @@ var listString = `
         },
         {
           "type": "text",
-          "text": <product>,
+          "text": "<product>",
           "wrap": true,
           "color": "#666666",
           "size": "sm",
@@ -275,7 +275,7 @@ var listString = `
         },
         {
           "type": "text",
-          "text": <options>,
+          "text": "<options>",
           "wrap": true,
           "color": "#666666",
           "size": "sm",
@@ -285,7 +285,7 @@ var listString = `
         },
         {
           "type": "text",
-          "text": <price>,
+          "text": "<price>",
           "size": "sm",
           "flex": 1,
           "align": "end"
@@ -309,38 +309,57 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 
 func (app *YamchaLineBot) replyFinishConfirm(replyToken string, groupID string) error {
 
-	if listItem, errMsg := app.orderSvc.FinishOrder(groupID); errMsg != nil {
+	listItem, err := app.orderSvc.FinishOrder(groupID)
+	if err != nil {
 		if _, err := app.bot.ReplyMessage(
 			replyToken,
 			linebot.NewTextMessage("查詢錯誤: 目前沒有可結帳之訂單"),
 		).Do(); err != nil {
 			return err
 		}
-	} else {
-		log.Println(listItem)
-		arrayString := []string{}
-		for _, order := range listItem {
-			replacer := strings.NewReplacer("<user>", `"伍冠宇"`, "<product>", `"`+string(order.ProductID)+`"`, "<options>", `"empty"`, "<price>", `"`+string(order.Price)+`"`)
-			newString := replacer.Replace(listString)
-			arrayString = append(arrayString, newString)
-		}
-		returnListString := strings.Join(arrayString, ",")
 
-		finishJSON := strings.Replace(finalListString, "<list_string_section>", returnListString, -1)
-		log.Println("finishJSON")
-		log.Println(finishJSON)
+		return nil
+	}
 
-		if container, err := linebot.UnmarshalFlexMessageJSON([]byte(finishJSON)); err != nil {
-			log.Println("err:", err)
-			return err
-		} else if _, errorMsg := app.bot.ReplyMessage(
-			replyToken,
-			linebot.NewFlexMessage("alt message", container),
-		).Do(); errorMsg != nil {
-			log.Println("reply token:", replyToken)
-			log.Println("reply text err:", errorMsg)
-			return errorMsg
-		}
+	log.Println(listItem)
+	arrayString := []string{}
+	var sum int = 0
+	for _, order := range listItem {
+		replacer := strings.NewReplacer(
+			"<user>", "伍冠宇",
+			"<product>", string(order.ProductID),
+			"<options>", "無",
+			"<price>", string(order.Price))
+
+		newString := replacer.Replace(listString)
+		arrayString = append(arrayString, newString)
+		priceInt, _ := strconv.Atoi(order.Price)
+		sum += priceInt
+	}
+	returnListString := strings.Join(arrayString, ",")
+
+	finalReplacer := strings.NewReplacer(
+		"<list_string_section>", returnListString,
+		"<total>", strconv.Itoa(sum),
+	)
+	finishJSON := finalReplacer.Replace(finalListString)
+	// finishJSON := strings.Replace(finalListString, "<list_string_section>", returnListString, -1)
+	log.Println("finishJSON")
+	log.Println(finishJSON)
+
+	container, err := linebot.UnmarshalFlexMessageJSON([]byte(finishJSON))
+	if err != nil {
+		log.Println("err:", err)
+		return err
+	}
+
+	if _, err := app.bot.ReplyMessage(
+		replyToken,
+		linebot.NewFlexMessage("alt message", container),
+	).Do(); err != nil {
+		log.Println("reply token:", replyToken)
+		log.Println("reply text err:", err)
+		return err
 	}
 
 	return nil
