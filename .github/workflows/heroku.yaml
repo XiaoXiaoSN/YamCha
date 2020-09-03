@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: copy config
+        run: echo ${{secrets.HEROKU_API_KEY}} > configs/config-build.yml
+
       - uses: akhileshns/heroku-deploy@v3.4.6 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
