@@ -17,3 +17,8 @@ run:
 	LINECORP_PLATFORM_CHANNEL_CHANNELSECRET=$(SECRET) \
 	LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN=$(TOKEN) \
 	go run cmd/line/*.go
+
+release:
+	heroku container:login
+	heroku container:push web
+	heroku container:release web
