@@ -33,7 +33,9 @@ jobs:
           heroku_app_name: "yamcha" # Must be unique in Heroku
           heroku_email: "freedom85812@gmail.com"
           usedocker: true
-          docker_build_args: CONFIG_FILE="$CONFIG_B64"
+          docker_build_args: |
+            CONFIG_FILE
+            $CONFIG_B64
           healthcheck: https://yamcha.herokuapp.com
         env:
           LINECORP_PLATFORM_CHANNEL_CHANNELSECRET: ${{secrets.LINECORP_PLATFORM_CHANNEL_CHANNELSECRET}}
