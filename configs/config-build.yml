@@ -2,8 +2,7 @@ env: dev
 server:
   port: ":18180"
 db:
-  username: "xiao"
-  password: "gUKmFVmSdOgTTinmQa9fmYr5AT0EAci5"
-  address: "yamcha.10oz.tw:23306"
-  DBName: "yamcha_db"
-  env: "dev"
+  username: ""
+  password: ""
+  address: ""
+  DBName: ""

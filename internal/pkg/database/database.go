@@ -2,6 +2,7 @@ package database
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	pkgConfig "yamcha/internal/pkg/config"
@@ -15,7 +16,14 @@ import (
 func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 	bo := backoff.NewExponentialBackOff()
 	bo.MaxElapsedTime = time.Duration(180) * time.Second
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
+
+	var connectionString string
+	connectionString = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
+
+	// workaround, use env if set
+	if dsn := os.Getenv("MYSQL_DSN"); dsn != "" {
+		connectionString = dsn
+	}
 
 	log.Debugf("db: database connection string: %s", connectionString)
 

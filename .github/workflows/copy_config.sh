@@ -1,1 +1,0 @@
-echo "$CONFIG" > ../../configs/config-build.yml
