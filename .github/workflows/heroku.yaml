@@ -21,6 +21,7 @@ jobs:
 
       - name: heroku release web
         run: |
+          cat configs/config-build.yml
           heroku container:push --app yamcha web
           heroku container:release --app yamcha web
 
