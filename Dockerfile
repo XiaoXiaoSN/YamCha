@@ -20,7 +20,7 @@ RUN touch config.yml
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/yamcha /srv/yamcha/yamcha
 COPY --from=builder /app/configs/config-build.yml /srv/yamcha/configs/config.yml
-# ARG CONFIG_FILE
-# RUN mkdir /srv/yamcha/configs && echo ${CONFIG_FILE} | base64 -D > /srv/yamcha/configs/config.yml
+ARG CONFIG_FILE
+RUN mkdir /srv/yamcha/configs && echo ${CONFIG_FILE} | base64 -D > /srv/yamcha/configs/config.yml
 
 ENTRYPOINT ["./yamcha"]

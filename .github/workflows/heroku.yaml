@@ -11,31 +11,32 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: copy config
-        env:
-          CONFIG: ${{ secrets.CONFIG }}
-        run: |
-          echo '$CONFIG' > configs/config-build.yml
-
-      - name: Login to Heroku Container registry
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
-
-      - name: heroku release web
-        run: |
-          heroku container:push --app yamcha web
-          heroku container:release --app yamcha web
-
-      # - uses: akhileshns/heroku-deploy@v3.4.6 # This is the action
-      #   with:
-      #     heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-      #     heroku_app_name: "yamcha" # Must be unique in Heroku
-      #     heroku_email: "freedom85812@gmail.com"
-      #     usedocker: true
-      #     docker_build_args: CONFIG_FILE=${{secrets.CONfIG_B64}}
-      #     healthcheck: https://yamcha.herokuapp.com
+      # - name: copy config
       #   env:
-      #     LINECORP_PLATFORM_CHANNEL_CHANNELSECRET: ${{secrets.LINECORP_PLATFORM_CHANNEL_CHANNELSECRET}}
-      #     LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN: ${{secrets.LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN}}
-      #     LINECORP_PLATFORM_CHANNEL_SERVERURL: ${{secrets.LINECORP_PLATFORM_CHANNEL_SERVERURL}}
+      #     CONFIG: ${{ secrets.CONFIG }}
+      #   run: |
+      #     echo '$CONFIG' > configs/config-build.yml
+
+      # - name: Login to Heroku Container registry
+      #   env: 
+      #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      #   run: heroku container:login
+
+      # - name: heroku release web
+      #   run: |
+      #     heroku container:push --app yamcha web
+      #     heroku container:release --app yamcha web
+
+      - uses: akhileshns/heroku-deploy@v3.4.6 # This is the action
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: "yamcha" # Must be unique in Heroku
+          heroku_email: "freedom85812@gmail.com"
+          usedocker: true
+          docker_build_args: CONFIG_FILE="$CONFIG_B64"
+          healthcheck: https://yamcha.herokuapp.com
+        env:
+          LINECORP_PLATFORM_CHANNEL_CHANNELSECRET: ${{secrets.LINECORP_PLATFORM_CHANNEL_CHANNELSECRET}}
+          LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN: ${{secrets.LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN}}
+          LINECORP_PLATFORM_CHANNEL_SERVERURL: ${{secrets.LINECORP_PLATFORM_CHANNEL_SERVERURL}}
+          CONFIG_B64: ${{ secrets.CONFIG_B64 }}
