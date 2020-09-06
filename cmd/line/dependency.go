@@ -93,6 +93,8 @@ func init() {
 func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	log.Info("start to init service...")
 
+	log.Warnf(">>>>>> address: %v", cfg.DBCfg.Address)
+
 	// init dependency services
 	err = initDependencyService(e, cfg)
 	if err != nil {
