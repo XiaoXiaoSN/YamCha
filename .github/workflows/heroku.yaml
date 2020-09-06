@@ -15,7 +15,7 @@ jobs:
         env:
           CONFIG: ${{ secrets.CONFIG }}
         run: |
-          echo '$env:CONFIG' > configs/config-build.yml
+          echo '$CONFIG' > configs/config-build.yml
 
       - name: Login to Heroku Container registry
         env: 
