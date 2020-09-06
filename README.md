@@ -1,6 +1,7 @@
 # LINE BOT - yamcha
 
 [![Build Status](https://travis-ci.org/XiaoXiaoSN/YamCha.svg?branch=master)](https://travis-ci.org/XiaoXiaoSN/YamCha)
+https://github.com/<OWNER>/<REPOSITORY>/workflows/<WORKFLOW_NAME>/badge.svg
 
 ## Getting Start
 ```
