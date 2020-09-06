@@ -21,7 +21,16 @@ jobs:
 
       - name: heroku release web
         run: |
-          cat configs/config-build.yml | base64 
+          cat configs/config-build.yml | head -n1 | tail -n 1
+          cat configs/config-build.yml | head -n2 | tail -n 1
+          cat configs/config-build.yml | head -n3 | tail -n 1
+          cat configs/config-build.yml | head -n4 | tail -n 1
+          cat configs/config-build.yml | head -n5 | tail -n 1
+          cat configs/config-build.yml | head -n6 | tail -n 1
+          cat configs/config-build.yml | head -n7 | tail -n 1
+          cat configs/config-build.yml | head -n8 | tail -n 1
+          cat configs/config-build.yml | head -n9 | tail -n 1
+          cat configs/config-build.yml | head -n10 | tail -n 1
           heroku container:push --app yamcha web
           heroku container:release --app yamcha web
 
