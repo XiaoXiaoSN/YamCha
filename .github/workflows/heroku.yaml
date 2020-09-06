@@ -16,6 +16,7 @@ jobs:
           CONFIG: ${{ secrets.CONFIG }}
         run: |
           cd .github/workflows
+          chmod + x ./copy_config.sh
           ./copy_config.sh
 
       - name: Login to Heroku Container registry
