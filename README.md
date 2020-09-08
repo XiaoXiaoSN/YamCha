@@ -3,13 +3,14 @@
 [![Build Status](https://travis-ci.org/XiaoXiaoSN/YamCha.svg?branch=master)](https://travis-ci.org/XiaoXiaoSN/YamCha)
 ![deploy heroku](https://github.com/XiaoXiaoSN/yamcha/workflows/deploy%20heroku/badge.svg)
 
-## Getting Start
+## Getting Started
 啟動需要四個環境變數，需要到 [heroku 設定](https://dashboard.heroku.com/apps/yamcha/settings) Settings > Config Vars
 - LINECORP_PLATFORM_CHANNEL_SERVERURL
 - LINECORP_PLATFORM_CHANNEL_CHANNELSECRET
 - LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN
 - MYSQL_DSN
 
+### Docker directly
 ```
 docker build . -t yamcha
 docker run --rm \
@@ -21,15 +22,22 @@ docker run --rm \
     yamcha
 ```
 
+### VSCode Remote Container
+這是個令人興奮的功能，用 docker 包裝開發環境免去了繁複的環境設定
+只需要在 VSCode 安裝 `Remote - Containers` 插件
+
+雖然這不是一個複雜的專案，但是個好的開始，對吧 ^__^
+
+## Depoly New Version
 push master 後會自動部署到 heroku
 
-
-
-
-## TODO:
+## Future
 - migrate
 - ci
 - gorm v2
 - dev contanier 自帶 mysql
 - dev contanier mysql 自帶測試資料
 - test
+
+## Learn More
+This is a golang [Line bot](https://github.com/line/line-bot-sdk-go) project

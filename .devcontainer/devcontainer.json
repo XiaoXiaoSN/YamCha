@@ -16,7 +16,7 @@
 
 	// Set *default* container specific settings.json values on container create.
 	"settings": { 
-		"terminal.integrated.shell.linux": "/bin/bash",
+		"terminal.integrated.shell.linux": "/bin/zsh",
 		"go.useGoProxyToCheckForToolUpdates": false,
 		"go.gopath": "/go",
 		"go.useLanguageServer": true
@@ -34,5 +34,10 @@
 	// "postCreateCommand": "go version",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+    // "remoteUser": "vscode"
+
+    // https://github.com/microsoft/vscode-remote-release/issues/1980#issuecomment-580636449
+    "mounts": [
+        "type=bind,source=${env:HOME}${env:USERPROFILE}/.ssh,target=/root/.ssh"
+    ],
 }
