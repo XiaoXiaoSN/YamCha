@@ -7,7 +7,7 @@ import (
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/order"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // OrderController is a api controller

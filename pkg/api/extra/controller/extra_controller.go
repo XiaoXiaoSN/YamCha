@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"github.com/labstack/echo"
 	"net/http"
 	"strconv"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/extra"
+
+	"github.com/labstack/echo/v4"
 )
 
 // ExtraController is a api controller

@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	pkgConfig "yamcha/internal/pkg/config"
+	pkgConfig "yamcha/internal/config"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 )
 

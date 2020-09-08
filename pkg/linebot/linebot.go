@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"yamcha/pkg/api/order"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/line/line-bot-sdk-go/linebot"
 	log "github.com/sirupsen/logrus"
 )
 
 // define yamcha const
 const (
-	StatusYamchaSeelp  int = 0
+	StatusYamchaSleep  int = 0
 	StatusYamchaWakeUp int = 1
 )
 

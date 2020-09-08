@@ -1,12 +1,8 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"os"
-	"strings"
 
 	pkgUser "yamcha/pkg/api/user"
 	userCtl "yamcha/pkg/api/user/controller"
@@ -33,16 +29,15 @@ import (
 	extraRepo "yamcha/pkg/api/extra/repository"
 	extraSvc "yamcha/pkg/api/extra/service"
 
+	"yamcha/internal/middleware"
 	"yamcha/pkg/linebot"
 
-	pkgConfig "yamcha/internal/pkg/config"
-	pkgDB "yamcha/internal/pkg/database"
+	pkgConfig "yamcha/internal/config"
+	pkgDB "yamcha/internal/database"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
-
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
 )
 
 var (
@@ -67,24 +62,6 @@ var (
 	_extraSvc  pkgExtra.Service
 )
 
-var middlewareCfg = middleware.CORSConfig{
-	AllowOrigins: []string{"*"},
-	AllowMethods: []string{
-		http.MethodGet,
-		http.MethodPost,
-		http.MethodPut,
-		http.MethodDelete,
-		http.MethodPatch,
-	},
-	AllowHeaders: []string{
-		"*",
-		echo.HeaderAuthorization,
-		echo.HeaderContentType,
-		echo.HeaderOrigin,
-		echo.HeaderContentLength,
-	},
-}
-
 func init() {
 	lineChannelSecret = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
 	lineChannelToken = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
@@ -92,8 +69,6 @@ func init() {
 
 func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	log.Info("start to init service...")
-
-	log.Warnf(">>>>>> address: %v", cfg.DBCfg.Address)
 
 	// init dependency services
 	err = initDependencyService(e, cfg)
@@ -109,42 +84,14 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	}
 
 	// register echo middleware
-	e.Use(middleware.CORSWithConfig(middlewareCfg))
+	e.Use(middleware.CORSConfig)
 
 	if cfg.Env != "production" {
 		// log http request body and response body
-		DefaultBodyDumpConfig := middleware.BodyDumpConfig{
-			Skipper: middleware.DefaultSkipper,
-			Handler: func(c echo.Context, reqBody, resBody []byte) {
-				// handle request body
-				if isJSONContent(c.Request().Header.Get(echo.HeaderContentType)) {
-					var prettyJSON bytes.Buffer
-					err := json.Indent(&prettyJSON, reqBody, "", "    ")
-					if err == nil {
-						reqBody = prettyJSON.Bytes()
-					}
-				}
-				// handle response body
-				if isJSONContent(c.Response().Header().Get(echo.HeaderContentType)) {
-					var prettyJSON bytes.Buffer
-					err := json.Indent(&prettyJSON, resBody, "", "    ")
-					if err == nil {
-						resBody = prettyJSON.Bytes()
-					}
-				}
-				fmt.Printf("request:  %s\nresponse: %s\n\n", reqBody, resBody)
-			},
-		}
-		e.Use(middleware.BodyDumpWithConfig(DefaultBodyDumpConfig))
+		e.Use(middleware.BodyDumpConfig)
 
 		// log http request status
-		DefaultLoggerConfig := middleware.LoggerConfig{
-			Skipper:          middleware.DefaultSkipper,
-			Format:           "${time_custom} ${status} ${method} ${path} (${latency_human})\n",
-			CustomTimeFormat: "2006-01-02 15:04:05",
-			Output:           os.Stdout,
-		}
-		e.Use(middleware.LoggerWithConfig(DefaultLoggerConfig))
+		e.Use(middleware.LoggerConfig)
 	}
 
 	// register restful API
@@ -193,18 +140,4 @@ func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 	extraCtl.SetRoutes(e, _extraCtl)
 
 	return nil
-}
-
-func isJSONContent(headerContentType string) bool {
-	headerContentType = strings.ToUpper(headerContentType)
-	allowList := []string{
-		strings.ToUpper(echo.MIMEApplicationJSON),
-		strings.ToUpper(echo.MIMEApplicationJSONCharsetUTF8),
-	}
-	for i := range allowList {
-		if headerContentType == allowList[i] {
-			return true
-		}
-	}
-	return false
 }

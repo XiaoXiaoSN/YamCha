@@ -5,7 +5,7 @@ import (
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/user"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // UserController is a api controller

@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	pkgConfig "yamcha/internal/pkg/config"
+	pkgConfig "yamcha/internal/config"
 
 	"github.com/cenk/backoff"
 	"github.com/jinzhu/gorm"
