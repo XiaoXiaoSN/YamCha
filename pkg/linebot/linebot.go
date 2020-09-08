@@ -3,6 +3,8 @@ package linebot
 import (
 	"errors"
 	"fmt"
+
+	"yamcha/internal/config"
 	"yamcha/pkg/api/order"
 
 	"github.com/labstack/echo/v4"
@@ -33,14 +35,11 @@ type YamchaLineBot struct {
 }
 
 // NewYambotLineBot create a Yamcha line bot
-func NewYambotLineBot(channelSecret, channelToken string, orderSvc order.Service) (LineBot, error) {
-	bot, err := linebot.New(channelSecret, channelToken)
+func NewYambotLineBot(cfg config.LineBotConfig, orderSvc order.Service) (LineBot, error) {
+	bot, err := linebot.New(cfg.ChannelSecret, cfg.ChannelToken)
 	if err != nil {
 		return nil, err
 	}
-
-	log.Info("Channel Secret:", channelSecret)
-	log.Info("Channel Token:", channelToken)
 
 	return &YamchaLineBot{
 		bot:      bot,

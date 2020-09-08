@@ -12,16 +12,21 @@ import (
 
 // Configuration is config
 type Configuration struct {
-	Env    string `yaml:"env"`
-	Server struct {
-		Port string `yaml:"port" json:"port"`
-	} `yaml:"server" json:"server"`
+	Env    string        `yaml:"env"`
+	Server Server        `yaml:"server"`
+	DBCfg  DBConfig      `yaml:"db"`
+	BotCfg LineBotConfig `yaml:"line_bot"`
+}
 
-	DBCfg DBConfig `yaml:"db"`
+// Server ...
+type Server struct {
+	Port string `yaml:"port"`
 }
 
 // DBConfig define the database connection infomation
 type DBConfig struct {
+	ConnectDSN string `yaml:"dsn" description:"priority use the column"`
+
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
 	Address  string `yaml:"address"`
@@ -29,16 +34,22 @@ type DBConfig struct {
 	Env      string `yaml:"env"`
 }
 
+// LineBotConfig ...
+type LineBotConfig struct {
+	ChannelSecret string `yaml:"channel_secret"`
+	ChannelToken  string `yaml:"channel_token"`
+}
+
 // NewConfiguration create and return a Configuration object
-func NewConfiguration(fileName string) *Configuration {
+func NewConfiguration() *Configuration {
 	flag.Parse()
 	cfg := Configuration{}
 
-	if len(fileName) == 0 {
+	var fileName, rootDirPath string
+	if fileName = os.Getenv("YAMCHA_CONFIG_NAME"); fileName == "" {
 		fileName = "config.yml"
 	}
-	rootDirPath := os.Getenv("YAMCHA_CONFIG")
-	if rootDirPath == "" {
+	if rootDirPath = os.Getenv("YAMCHA_CONFIG"); rootDirPath == "" {
 		rootDirPath = "./configs"
 	}
 	configPath := filepath.Join(rootDirPath, fileName)
@@ -47,7 +58,7 @@ func NewConfiguration(fileName string) *Configuration {
 		log.Fatalf("[CONFIG] file error: %s", err.Error())
 	}
 
-	// config exists
+	// check config exists
 	file, err := ioutil.ReadFile(filepath.Clean(configPath))
 	if err != nil {
 		log.Fatalf("[CONFIG] read file error: %s", err.Error())
@@ -59,24 +70,37 @@ func NewConfiguration(fileName string) *Configuration {
 	}
 
 	cfg.BasicSetting()
-
 	return &cfg
 }
 
 // BasicSetting set default value
-func (conf *Configuration) BasicSetting() {
+func (cfg *Configuration) BasicSetting() {
 	// set default env
-	if len(conf.Env) == 0 {
-		conf.Env = "release"
+	if len(cfg.Env) == 0 {
+		cfg.Env = "release"
 	}
 
 	// set default port
-	if len(conf.Server.Port) == 0 {
-		conf.Server.Port = ":18180"
+	if len(cfg.Server.Port) == 0 {
+		cfg.Server.Port = ":18180"
 	}
+
 	// for heroku
 	herokuPort := os.Getenv("PORT")
 	if len(herokuPort) != 0 {
-		conf.Server.Port = ":" + herokuPort
+		cfg.Server.Port = ":" + herokuPort
+	}
+
+	// for db connect
+	if dsn := os.Getenv("MYSQL_DSN"); dsn != "" {
+		cfg.DBCfg.ConnectDSN = dsn
+	}
+
+	// for line bot
+	lineChannelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
+	lineChannelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
+	cfg.BotCfg = LineBotConfig{
+		ChannelSecret: lineChannelSecret,
+		ChannelToken:  lineChannelToken,
 	}
 }

@@ -2,7 +2,6 @@ package database
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	pkgConfig "yamcha/internal/config"
@@ -17,20 +16,15 @@ func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 	bo := backoff.NewExponentialBackOff()
 	bo.MaxElapsedTime = time.Duration(180) * time.Second
 
-	var connectionString string
-	connectionString = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
-
-	// workaround, use env if set
-	if dsn := os.Getenv("MYSQL_DSN"); dsn != "" {
-		connectionString = dsn
+	if cfg.ConnectDSN == "" {
+		cfg.ConnectDSN = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
 	}
-
-	log.Debugf("db: database connection string: %s", connectionString)
+	log.Debugf("db: database connection DSN: %s", cfg.ConnectDSN)
 
 	var database *gorm.DB
 	var err error
 	err = backoff.Retry(func() error {
-		database, err = gorm.Open("mysql", connectionString)
+		database, err = gorm.Open("mysql", cfg.ConnectDSN)
 		if err != nil {
 			log.Errorf("db: mysql open failed: %v", err)
 			return err

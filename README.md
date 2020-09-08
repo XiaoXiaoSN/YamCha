@@ -28,15 +28,15 @@ docker run --rm \
 
 雖然這不是一個複雜的專案，但是個好的開始，對吧 ^__^
 
-## Depoly New Version
+## Deploy New Version
 push master 後會自動部署到 heroku
 
 ## Future
 - migrate
 - ci
 - gorm v2
-- dev contanier 自帶 mysql
-- dev contanier mysql 自帶測試資料
+- dev container 自帶 mysql
+- dev container mysql 自帶測試資料
 - test
 
 ## Learn More

@@ -6,18 +6,18 @@ import (
 	"os/signal"
 	"time"
 
-	pkgConfig "yamcha/internal/config"
+	"yamcha/internal/config"
+	"yamcha/internal/http"
 
-	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	log.Println("yamcha init...")
-	cfg := pkgConfig.NewConfiguration("config.yml")
+	cfg := config.NewConfiguration()
 
 	// create Echo web service
-	e := echo.New()
+	e := http.NewEcho(cfg)
 	err := initService(e, cfg)
 	if err != nil {
 		log.Panicln("failed to register Restful API...")

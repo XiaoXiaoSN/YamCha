@@ -1,9 +1,6 @@
 package main
 
 import (
-	"net/http"
-	"os"
-
 	pkgUser "yamcha/pkg/api/user"
 	userCtl "yamcha/pkg/api/user/controller"
 	userRepo "yamcha/pkg/api/user/repository"
@@ -29,7 +26,6 @@ import (
 	extraRepo "yamcha/pkg/api/extra/repository"
 	extraSvc "yamcha/pkg/api/extra/service"
 
-	"yamcha/internal/middleware"
 	"yamcha/pkg/linebot"
 
 	pkgConfig "yamcha/internal/config"
@@ -41,9 +37,6 @@ import (
 )
 
 var (
-	lineChannelSecret string
-	lineChannelToken  string
-
 	bot linebot.LineBot
 
 	_userRepo pkgUser.Repository
@@ -62,11 +55,6 @@ var (
 	_extraSvc  pkgExtra.Service
 )
 
-func init() {
-	lineChannelSecret = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
-	lineChannelToken = os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
-}
-
 func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	log.Info("start to init service...")
 
@@ -77,27 +65,13 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	}
 
 	// init yamcha bot
-	bot, err = linebot.NewYambotLineBot(lineChannelSecret, lineChannelToken, _orderSvc)
+	bot, err = linebot.NewYambotLineBot(cfg.BotCfg, _orderSvc)
 	if err != nil {
 		log.Infof("failed to init linebot.NewYambotLineBot err: %+v", err)
 		return err
 	}
 
-	// register echo middleware
-	e.Use(middleware.CORSConfig)
-
-	if cfg.Env != "production" {
-		// log http request body and response body
-		e.Use(middleware.BodyDumpConfig)
-
-		// log http request status
-		e.Use(middleware.LoggerConfig)
-	}
-
 	// register restful API
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, World!")
-	})
 	e.POST("/callback", bot.CallbackHandle)
 
 	return nil
