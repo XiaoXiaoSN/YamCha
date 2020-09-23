@@ -42,6 +42,8 @@ type LineBotConfig struct {
 
 // NewConfiguration create and return a Configuration object
 func NewConfiguration() *Configuration {
+	log.Warn("!!!!!!! start to init config !!!!!!!")
+
 	flag.Parse()
 	cfg := Configuration{}
 

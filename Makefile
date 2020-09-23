@@ -12,11 +12,21 @@ init:
 	cp configs/config-build.yml configs/config.yml
 
 run:
+	@wire ./...
 	YAMCHA_CONFIG=$(CURDIR)/configs \
 	LINECORP_PLATFORM_CHANNEL_SERVERURL=$(SERVERURL) \
 	LINECORP_PLATFORM_CHANNEL_CHANNELSECRET=$(SECRET) \
 	LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN=$(TOKEN) \
-	go run cmd/line/*.go
+	go run main.go line
+
+docker-build:
+	docker build . -t yamcha
+
+docker-run:
+	docker run -e LINECORP_PLATFORM_CHANNEL_SERVERURL=$(SERVERURL) \
+	-e LINECORP_PLATFORM_CHANNEL_CHANNELSECRET=$(SECRET) \
+	-e LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN=$(TOKEN) \
+	yamcha 
 
 release:
 	heroku container:login

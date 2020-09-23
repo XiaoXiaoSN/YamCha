@@ -1,4 +1,4 @@
-package main
+package line
 
 import (
 	pkgUser "yamcha/pkg/api/user"
@@ -31,7 +31,6 @@ import (
 	pkgConfig "yamcha/internal/config"
 	pkgDB "yamcha/internal/database"
 
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	log "github.com/sirupsen/logrus"
 )

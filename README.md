@@ -28,7 +28,7 @@ docker run --rm \
 
 雖然這不是一個複雜的專案，但是個好的開始，對吧 ^__^
 
-## Deploy New Version
+## Deploy New Version
 push master 後會自動部署到 heroku
 
 ## Future

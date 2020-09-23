@@ -19,7 +19,6 @@ func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 	if cfg.ConnectDSN == "" {
 		cfg.ConnectDSN = fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=true", cfg.Username, cfg.Password, cfg.Address, cfg.DBName)
 	}
-	log.Debugf("db: database connection DSN: %s", cfg.ConnectDSN)
 
 	var database *gorm.DB
 	var err error
