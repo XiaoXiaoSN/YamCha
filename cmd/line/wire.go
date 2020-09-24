@@ -12,7 +12,8 @@ import (
 	"github.com/google/wire"
 )
 
-func initApplication(ctx context.Context) (repository.Repository, error) {
+// InitApplication ...
+func InitApplication(ctx context.Context) (repository.Repository, error) {
 	wire.Build(
 		config.NewConfiguration,
 		provider.GORMSet,

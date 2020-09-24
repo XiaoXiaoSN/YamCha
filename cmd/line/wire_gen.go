@@ -19,7 +19,7 @@ import (
 
 // Injectors from wire.go:
 
-func initApplication(ctx context.Context) (repository.Repository, error) {
+func InitApplication(ctx context.Context) (repository.Repository, error) {
 	configuration := config.NewConfiguration()
 	db, err := provider.InitGORM(configuration)
 	if err != nil {

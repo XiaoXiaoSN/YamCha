@@ -58,7 +58,7 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	log.Info("start to init service...")
 
 	// init dependency services
-	err = initDependencyService(e, cfg)
+	err = InitDependencyService(e, cfg)
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,8 @@ func initService(e *echo.Echo, cfg *pkgConfig.Configuration) (err error) {
 	return nil
 }
 
-func initDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
+// InitDependencyService Init dependency services
+func InitDependencyService(e *echo.Echo, cfg *pkgConfig.Configuration) error {
 	db, err := pkgDB.NewDatabases(cfg.DBCfg)
 	if err != nil {
 		return nil

@@ -1,3 +1,6 @@
+// 不加上去 wire 會錯，我不知道為什麼...
+//+build !wireinject
+
 package test
 
 import (
@@ -9,9 +12,9 @@ import (
 )
 
 func testUserAPI(e *httpexpect.Expect) {
-	// e.POST("/api/v1/users").
-	// 	Expect().
-	// 	Status(http.StatusBadRequest)
+	e.POST("/api/v1/users").
+		Expect().
+		Status(http.StatusBadRequest)
 
 	u := user.User{
 		Name:   "Testing",

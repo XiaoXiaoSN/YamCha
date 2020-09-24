@@ -5,8 +5,19 @@ import (
 	"yamcha/internal/config"
 	"yamcha/internal/middleware"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 )
+
+// CustomValidator ...
+type CustomValidator struct {
+	validator *validator.Validate
+}
+
+// Validate ...
+func (cv *CustomValidator) Validate(i interface{}) error {
+	return cv.validator.Struct(i)
+}
 
 // NewEcho create new engine for handler to register
 func NewEcho(cfg *config.Configuration) *echo.Echo {
@@ -22,6 +33,9 @@ func NewEcho(cfg *config.Configuration) *echo.Echo {
 		// log http request status
 		e.Use(middleware.LoggerConfig)
 	}
+
+	// register validator
+	e.Validator = &CustomValidator{validator: validator.New()}
 
 	RegisterDefaultRoute(e)
 	return e

@@ -12,7 +12,7 @@ init:
 	cp configs/config-build.yml configs/config.yml
 
 run:
-	# @wire ./...
+	@wire ./...
 	YAMCHA_CONFIG=$(CURDIR)/configs \
 	LINECORP_PLATFORM_CHANNEL_SERVERURL=$(SERVERURL) \
 	LINECORP_PLATFORM_CHANNEL_CHANNELSECRET=$(SECRET) \
@@ -20,7 +20,7 @@ run:
 	go run main.go line
 
 run-test:
-	# @wire ./...
+	@wire ./...
 	YAMCHA_CONFIG=$(CURDIR)/configs \
 	YAMCHA_CONFIG_NAME=config-test.yml \
 	LINECORP_PLATFORM_CHANNEL_SERVERURL=$(SERVERURL) \
