@@ -1,0 +1,8 @@
+env: dev
+server:
+  port: ":18180"
+db:
+  username: "xiao"
+  password: "xiao"
+  address: "localhost:3306"
+  DBName: "default"

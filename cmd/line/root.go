@@ -45,7 +45,7 @@ var LineCmd = &cobra.Command{
 		// Wait for interrupt signal to gracefully shutdown the server with
 		// a timeout of 10 seconds.
 		quit := make(chan os.Signal)
-		signal.Notify(quit, os.Interrupt)
+		signal.Notify(quit, os.Interrupt, os.Kill)
 		<-quit
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()

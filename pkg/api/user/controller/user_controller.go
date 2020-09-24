@@ -27,7 +27,7 @@ func (ctl *UserController) CreateUserEndpoint(c echo.Context) error {
 	u := user.User{}
 	err := c.Bind(&u)
 	if err != nil {
-		return c.JSON(http.StatusCreated, api.H{
+		return c.JSON(http.StatusBadRequest, api.H{
 			"error": err,
 		})
 	}

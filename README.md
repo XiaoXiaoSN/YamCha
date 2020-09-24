@@ -38,6 +38,7 @@ push master 後會自動部署到 heroku
 - dev container 自帶 mysql
 - dev container mysql 自帶測試資料
 - test
+- viper
 
 ## Learn More
 This is a golang [Line bot](https://github.com/line/line-bot-sdk-go) project
