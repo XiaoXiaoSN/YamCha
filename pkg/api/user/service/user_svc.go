@@ -3,26 +3,28 @@ package service
 import (
 	"context"
 	"yamcha/pkg/api/user"
+	"yamcha/pkg/model"
+	"yamcha/pkg/repository"
 )
 
 // UserService implement a user service
 type UserService struct {
-	UserRepo user.Repository
+	repo repository.Repository
 }
 
 // NewUserService make a user servicer
-func NewUserService(userRepo user.Repository) user.Service {
+func NewUserService(repo repository.Repository) user.Service {
 	return &UserService{
-		UserRepo: userRepo,
+		repo: repo,
 	}
 }
 
 // CreateUser ...
-func (svc *UserService) CreateUser(ctx context.Context, u user.User) error {
-	return svc.UserRepo.CreateUser(ctx, u)
+func (svc *UserService) CreateUser(ctx context.Context, u model.User) error {
+	return svc.repo.CreateUser(ctx, u)
 }
 
 // UserList ...
-func (svc *UserService) UserList(ctx context.Context) ([]user.User, error) {
-	return svc.UserRepo.UserList(ctx)
+func (svc *UserService) UserList(ctx context.Context) ([]model.User, error) {
+	return svc.repo.UserList(ctx)
 }

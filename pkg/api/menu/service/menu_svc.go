@@ -3,21 +3,23 @@ package service
 import (
 	"context"
 	"yamcha/pkg/api/menu"
+	"yamcha/pkg/model"
+	"yamcha/pkg/repository"
 )
 
 // MenuService implement a menu service
 type MenuService struct {
-	MenuRepo menu.Repository
+	repo repository.Repository
 }
 
 // NewMenuService make a menu servicer
-func NewMenuService(menuRepo menu.Repository) menu.Service {
+func NewMenuService(repo repository.Repository) menu.Service {
 	return &MenuService{
-		MenuRepo: menuRepo,
+		repo: repo,
 	}
 }
 
 // GetMenuList ...
-func (svc *MenuService) GetMenuList(ctx context.Context, storeID int) ([]menu.Menu, error) {
-	return svc.MenuRepo.GetMenuList(ctx, storeID)
+func (svc *MenuService) GetMenuList(ctx context.Context, storeID int) ([]model.Menu, error) {
+	return svc.repo.GetMenuList(ctx, storeID)
 }

@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/user"
+	"yamcha/pkg/model"
 
 	"github.com/labstack/echo/v4"
 )
@@ -24,7 +25,7 @@ func NewUsercontroller(userSvc user.Service) *UserController {
 func (ctl *UserController) CreateUserEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	u := user.User{}
+	u := model.User{}
 	err := c.Bind(&u)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})

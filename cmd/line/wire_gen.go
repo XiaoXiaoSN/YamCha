@@ -9,27 +9,18 @@ import (
 	"context"
 	"yamcha/internal/config"
 	"yamcha/internal/provider"
-	repository2 "yamcha/pkg/api/extra/repository"
-	repository3 "yamcha/pkg/api/menu/repository"
-	repository4 "yamcha/pkg/api/order/repository"
-	repository5 "yamcha/pkg/api/store/repository"
-	repository6 "yamcha/pkg/api/user/repository"
 	"yamcha/pkg/repository"
+	"yamcha/pkg/repository/db"
 )
 
 // Injectors from wire.go:
 
 func InitApplication(ctx context.Context) (repository.Repository, error) {
 	configuration := config.NewConfiguration()
-	db, err := provider.InitGORM(configuration)
+	gormDB, err := provider.InitGORM(configuration)
 	if err != nil {
 		return nil, err
 	}
-	extraRepository := repository2.NewExtraRepository(db)
-	menuRepository := repository3.NewMenuRepository(db)
-	orderRepository := repository4.NewOrderRepository(db)
-	storeRepository := repository5.NewStoreRepository(db)
-	userRepository := repository6.NewUserRepository(db)
-	repositoryRepository := repository.NewRepo(extraRepository, menuRepository, orderRepository, storeRepository, userRepository)
+	repositoryRepository := db.NewRepo(gormDB)
 	return repositoryRepository, nil
 }

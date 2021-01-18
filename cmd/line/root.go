@@ -9,7 +9,7 @@ import (
 	"yamcha/internal/config"
 	"yamcha/internal/http"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -19,26 +19,31 @@ var LineCmd = &cobra.Command{
 	Short: "TODO: 我是 Yamcha 的短短介紹",
 	Long:  `TODO: 我是 Yamcha 的長篇介紹`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// JUST TEST
-		// _, _ = initApplication(context.Background())
+		ctx := cmd.Context()
 
-		log.Println("yamcha init...")
+		// JUST TEST
+		// repo, err := InitApplication(ctx)
+		// if err != nil {
+		// 	logrus.Fatal(err)
+		// }
+
+		logrus.Println("yamcha init...")
 		cfg := config.NewConfiguration()
 
 		// create Echo web service
 		e := http.NewEcho(cfg)
 		err := initService(e, cfg)
 		if err != nil {
-			log.Panicln("failed to register Restful API...")
+			logrus.Panicln("failed to register Restful API...")
 			return
 		}
 
 		// Start server
 		go func() {
 			port := cfg.Server.Port
-			log.Infof("service run at port %s", port)
+			logrus.Infof("service run at port %s", port)
 			if err := e.Start(port); err != nil {
-				log.Warn("shutting down the server, error:", err)
+				logrus.Warn("shutting down the server, error:", err)
 			}
 		}()
 
@@ -50,7 +55,7 @@ var LineCmd = &cobra.Command{
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		if err := e.Shutdown(ctx); err != nil {
-			log.Fatal(err)
+			logrus.Fatal(err)
 		}
 	},
 }

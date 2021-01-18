@@ -10,6 +10,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var globalConfig *Configuration
+
 // Configuration is config
 type Configuration struct {
 	Env    string        `yaml:"env"`
@@ -42,8 +44,6 @@ type LineBotConfig struct {
 
 // NewConfiguration create and return a Configuration object
 func NewConfiguration() *Configuration {
-	log.Warn("!!!!!!! start to init config !!!!!!!")
-
 	flag.Parse()
 	cfg := Configuration{}
 
@@ -72,6 +72,8 @@ func NewConfiguration() *Configuration {
 	}
 
 	cfg.BasicSetting()
+	
+	globalConfig = &cfg
 	return &cfg
 }
 
@@ -105,4 +107,9 @@ func (cfg *Configuration) BasicSetting() {
 		ChannelSecret: lineChannelSecret,
 		ChannelToken:  lineChannelToken,
 	}
+}
+
+// Config get the global config
+func Config() Configuration {
+	return *globalConfig
 }

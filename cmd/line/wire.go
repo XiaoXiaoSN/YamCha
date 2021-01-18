@@ -18,8 +18,6 @@ func InitApplication(ctx context.Context) (repository.Repository, error) {
 		config.NewConfiguration,
 		provider.GORMSet,
 		provider.RepoSet,
-
-		repository.NewRepo,
 	)
 	return nil, nil
 }

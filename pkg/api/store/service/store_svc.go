@@ -3,42 +3,44 @@ package service
 import (
 	"context"
 	"yamcha/pkg/api/store"
+	"yamcha/pkg/model"
+	"yamcha/pkg/repository"
 )
 
 // StoreService implement a user service
 type StoreService struct {
-	StoreRepo store.Repository
+	repo repository.Repository
 }
 
 // NewStoreService make a user servicer
-func NewStoreService(storeRepo store.Repository) store.Service {
+func NewStoreService(repo repository.Repository) store.Service {
 	return &StoreService{
-		StoreRepo: storeRepo,
+		repo: repo,
 	}
 }
 
 // CreateStore ...
-func (svc *StoreService) CreateStore(ctx context.Context, targetStore store.Store) (store.Store, error) {
-	return svc.StoreRepo.CreateStore(ctx, targetStore)
+func (svc *StoreService) CreateStore(ctx context.Context, targetStore model.Store) (model.Store, error) {
+	return svc.repo.CreateStore(ctx, targetStore)
 }
 
 // GetStore ...
-func (svc *StoreService) GetStore(ctx context.Context, storeID int) (store.Store, error) {
-	return svc.StoreRepo.GetStore(ctx, storeID)
+func (svc *StoreService) GetStore(ctx context.Context, storeID int) (model.Store, error) {
+	return svc.repo.GetStore(ctx, storeID)
 }
 
 // StoreList ...
-func (svc *StoreService) StoreList(ctx context.Context) ([]store.Store, error) {
-	return svc.StoreRepo.StoreList(ctx)
+func (svc *StoreService) StoreList(ctx context.Context) ([]model.Store, error) {
+	return svc.repo.StoreList(ctx)
 }
 
 // BranchStoreList ...
-func (svc *StoreService) BranchStoreList(ctx context.Context, storeID int) ([]store.BranchStore, error) {
-	return svc.StoreRepo.BranchStoreList(ctx, storeID)
+func (svc *StoreService) BranchStoreList(ctx context.Context, storeID int) ([]model.BranchStore, error) {
+	return svc.repo.BranchStoreList(ctx, storeID)
 }
 
 // CreateBranchStore ...
-func (svc *StoreService) CreateBranchStore(ctx context.Context, branchStore store.BranchStore) (store.BranchStore, error) {
-	return svc.StoreRepo.CreateBranchStore(ctx, branchStore)
+func (svc *StoreService) CreateBranchStore(ctx context.Context, branchStore model.BranchStore) (model.BranchStore, error) {
+	return svc.repo.CreateBranchStore(ctx, branchStore)
 
 }

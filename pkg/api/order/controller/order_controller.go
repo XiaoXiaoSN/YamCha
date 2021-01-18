@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/order"
+	"yamcha/pkg/model"
 
 	"github.com/labstack/echo/v4"
 )
@@ -26,7 +27,7 @@ func NewOrdercontroller(orderSvc order.Service) *OrderController {
 func (ctl *OrderController) CreateOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	cParam := order.CreateOrderParams{}
+	cParam := model.CreateOrderParams{}
 	err := c.Bind(&cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
@@ -64,7 +65,7 @@ func (ctl *OrderController) GetOrderEndpoint(c echo.Context) error {
 func (ctl *OrderController) OrderListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	findParams := order.Params{}
+	findParams := model.OrderParams{}
 	err := c.Bind(&findParams)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
@@ -103,7 +104,7 @@ func (ctl *OrderController) DeleteOrderEndpoint(c echo.Context) error {
 func (ctl *OrderController) UpdateOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	cParam := order.CreateOrderParams{}
+	cParam := model.CreateOrderParams{}
 	err := c.Bind(&cParam)
 	log.Println(cParam)
 	if err != nil {

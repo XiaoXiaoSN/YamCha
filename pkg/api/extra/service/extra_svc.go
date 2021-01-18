@@ -3,21 +3,23 @@ package service
 import (
 	"context"
 	"yamcha/pkg/api/extra"
+	"yamcha/pkg/model"
+	"yamcha/pkg/repository"
 )
 
 // ExtraService implement a extra service
 type ExtraService struct {
-	ExtraRepo extra.Repository
+	repo repository.Repository
 }
 
 // NewExtraService make a extra servicer
-func NewExtraService(extraRepo extra.Repository) extra.Service {
+func NewExtraService(repo repository.Repository) extra.Service {
 	return &ExtraService{
-		ExtraRepo: extraRepo,
+		repo: repo,
 	}
 }
 
 // GetExtraList ...
-func (svc *ExtraService) GetExtraList(ctx context.Context, storeID int) ([]extra.Extra, error) {
-	return svc.ExtraRepo.GetExtraList(ctx, storeID)
+func (svc *ExtraService) GetExtraList(ctx context.Context, storeID int) ([]model.Extra, error) {
+	return svc.repo.GetExtraList(ctx, storeID)
 }

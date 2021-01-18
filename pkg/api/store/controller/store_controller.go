@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"yamcha/pkg/api"
 	"yamcha/pkg/api/store"
+	"yamcha/pkg/model"
 
 	"github.com/labstack/echo/v4"
 )
@@ -26,12 +27,12 @@ func NewStorecontroller(storeSvc store.Service) *StoreController {
 func (ctl *StoreController) CreateStoreEndpoint(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 
-	newStore := store.Store{}
+	newStore := model.Store{}
 	if err = c.Bind(&newStore); err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
-	var storeData store.Store
+	var storeData model.Store
 	storeData, err = ctl.storeSvc.CreateStore(ctx, newStore)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
@@ -101,19 +102,19 @@ func (ctl *StoreController) BranchStoreListEndpoint(c echo.Context) error {
 func (ctl *StoreController) CreateBranchStoreEndpoint(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 
-	newBranchStore := store.BranchStore{}
+	newBranchStore := model.BranchStore{}
 	if err = c.Bind(&newBranchStore); err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
 	}
 
 	storeIDStr := c.Param("storeId")
-	storeID, err := strconv.Atoi(storeIDStr)
+	_, err = strconv.Atoi(storeIDStr)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, api.H{"error": err.Error()})
 	}
-	newBranchStore.StoreGroupID = storeID
+	newBranchStore.StoreGroupID = storeIDStr
 
-	var storeData store.BranchStore
+	var storeData model.BranchStore
 	storeData, err = ctl.storeSvc.CreateBranchStore(ctx, newBranchStore)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, api.H{"error": err.Error()})
