@@ -10,18 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-
-      # - name: Login to Heroku Container registry
-      #   env: 
-      #     HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      #   run: heroku container:login
-
-      # - name: heroku release web
-      #   run: |
-      #     heroku container:push --app yamcha web
-      #     heroku container:release --app yamcha web
-
-      - uses: akhileshns/heroku-deploy@v3.4.6 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.8.9 # This is the action
         with:
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "yamcha" # Must be unique in Heroku
