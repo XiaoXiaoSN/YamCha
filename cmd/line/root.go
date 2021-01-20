@@ -7,7 +7,8 @@ import (
 	"time"
 
 	"yamcha/internal/config"
-	"yamcha/internal/httputil"
+	"yamcha/pkg/delivery/api"
+	"yamcha/pkg/delivery/linebot"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -21,28 +22,29 @@ var LineCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 
-		// JUST TEST
-		// repo, err := InitApplication(ctx)
+		logrus.Println("yamcha init...")
+		// cfg := config.NewConfiguration()
+
+		// // create Echo web service
+		// e := httputil.NewEcho(cfg)
+		// err := initService(e, cfg)
 		// if err != nil {
-		// 	logrus.Fatal(err)
+		// 	logrus.Panicln("failed to register Restful API...")
+		// 	return
 		// }
 
-		logrus.Println("yamcha init...")
-		cfg := config.NewConfiguration()
-
-		// create Echo web service
-		e := httputil.NewEcho(cfg)
-		err := initService(e, cfg)
+		app, err := InitApplication(ctx)
 		if err != nil {
-			logrus.Panicln("failed to register Restful API...")
-			return
+			logrus.Panic(err)
 		}
+		api.SetRoutes(app.Echo, app.Controller)
+		linebot.SetRoutes(app.Echo, app.LineBot)
 
 		// Start server
 		go func() {
-			port := cfg.Server.Port
+			port := config.Config().Server.Port
 			logrus.Infof("service run at port %s", port)
-			if err := e.Start(port); err != nil {
+			if err := app.Echo.Start(port); err != nil {
 				logrus.Warn("shutting down the server, error:", err)
 			}
 		}()
@@ -54,7 +56,7 @@ var LineCmd = &cobra.Command{
 		<-quit
 		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
-		if err := e.Shutdown(ctx); err != nil {
+		if err := app.Echo.Shutdown(ctx); err != nil {
 			logrus.Fatal(err)
 		}
 	},

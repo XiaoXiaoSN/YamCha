@@ -17,8 +17,8 @@ import (
 	extraSvc "yamcha/pkg/service/extra/service"
 
 	"yamcha/pkg/delivery/api"
+	"yamcha/pkg/delivery/linebot"
 
-	"yamcha/pkg/linebot"
 	"yamcha/pkg/repository"
 	dbRepo "yamcha/pkg/repository/db"
 

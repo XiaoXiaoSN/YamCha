@@ -7,20 +7,54 @@ package line
 
 import (
 	"context"
+	"github.com/labstack/echo/v4"
 	"yamcha/internal/config"
-	"yamcha/internal/provider"
-	"yamcha/pkg/repository"
+	"yamcha/internal/database"
+	"yamcha/internal/httputil"
+	"yamcha/pkg/delivery/api"
+	"yamcha/pkg/delivery/linebot"
 	"yamcha/pkg/repository/db"
+	service5 "yamcha/pkg/service/extra/service"
+	service4 "yamcha/pkg/service/menu/service"
+	"yamcha/pkg/service/order/service"
+	service2 "yamcha/pkg/service/store/service"
+	service3 "yamcha/pkg/service/user/service"
 )
 
 // Injectors from wire.go:
 
-func InitApplication(ctx context.Context) (repository.Repository, error) {
+func InitApplication(ctx context.Context) (*Application, error) {
 	configuration := config.NewConfiguration()
-	gormDB, err := provider.InitGORM(configuration)
+	echo := httputil.NewEcho(configuration)
+	dbConfig := configuration.DBCfg
+	gormDB, err := database.NewDatabases(dbConfig)
 	if err != nil {
 		return nil, err
 	}
-	repositoryRepository := db.NewRepo(gormDB)
-	return repositoryRepository, nil
+	repository := db.NewRepo(gormDB)
+	orderService := service.NewOrderService(repository)
+	storeService := service2.NewStoreService(repository)
+	userService := service3.NewUserService(repository)
+	menuService := service4.NewMenuService(repository)
+	extraService := service5.NewExtraService(repository)
+	controller := api.NewController(orderService, storeService, userService, menuService, extraService)
+	lineBotConfig := configuration.BotCfg
+	lineBot, err := linebot.NewYambotLineBot(lineBotConfig, orderService)
+	if err != nil {
+		return nil, err
+	}
+	application := &Application{
+		Echo:       echo,
+		Controller: controller,
+		LineBot:    lineBot,
+	}
+	return application, nil
+}
+
+// wire.go:
+
+type Application struct {
+	Echo       *echo.Echo
+	Controller api.Controller
+	LineBot    linebot.LineBot
 }

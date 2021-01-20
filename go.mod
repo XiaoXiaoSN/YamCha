@@ -10,6 +10,7 @@ require (
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo/v4 v4.1.17
 	github.com/line/line-bot-sdk-go v7.2.0+incompatible
+	github.com/rs/zerolog v1.20.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v1.0.0
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
