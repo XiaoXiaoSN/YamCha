@@ -18,7 +18,8 @@ jobs:
           usedocker: true
           healthcheck: https://yamcha.herokuapp.com
         env:
-          LINECORP_PLATFORM_CHANNEL_CHANNELSECRET: ${{ secrets.LINECORP_PLATFORM_CHANNEL_CHANNELSECRET }}
-          LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN: ${{ secrets.LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN }}
-          LINECORP_PLATFORM_CHANNEL_SERVERURL: ${{ secrets.LINECORP_PLATFORM_CHANNEL_SERVERURL }}
-          MYSQL_DSN: ${{ secrets.MYSQL_DSN }}
+          # PLEASE NOTE: The "HD_" will be scrapped from the variable your name by the action. 
+          HD_LINECORP_PLATFORM_CHANNEL_CHANNELSECRET: ${{ secrets.LINECORP_PLATFORM_CHANNEL_CHANNELSECRET }}
+          HD_LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN: ${{ secrets.LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN }}
+          HD_LINECORP_PLATFORM_CHANNEL_SERVERURL: ${{ secrets.LINECORP_PLATFORM_CHANNEL_SERVERURL }}
+          HD_MYSQL_DSN: ${{ secrets.MYSQL_DSN }}
