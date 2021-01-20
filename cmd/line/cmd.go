@@ -22,17 +22,6 @@ var LineCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := cmd.Context()
 
-		logrus.Println("yamcha init...")
-		// cfg := config.NewConfiguration()
-
-		// // create Echo web service
-		// e := httputil.NewEcho(cfg)
-		// err := initService(e, cfg)
-		// if err != nil {
-		// 	logrus.Panicln("failed to register Restful API...")
-		// 	return
-		// }
-
 		app, err := InitApplication(ctx)
 		if err != nil {
 			logrus.Panic(err)

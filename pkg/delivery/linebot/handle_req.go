@@ -10,7 +10,11 @@ func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken st
 	// wake up yamcha!
 	case "yamcha", "Yamcha", "飲茶":
 		log.Info("reply token:", replyToken)
-		_ = app.wakeUp(message, replyToken, source)
+		err := app.wakeUp(message, replyToken, source)
+		if err != nil {
+			return err
+		}
+
 		// if _, err := app.bot.ReplyMessage(
 		// 	replyToken,
 		// 	linebot.NewTextMessage("echo: "+message.Text),
@@ -26,8 +30,13 @@ func (app *YamchaLineBot) handleText(message *linebot.TextMessage, replyToken st
 		// 	).Do(); err != nil {
 		// 		return err
 		// 	}
+
 	case "Yamcha完成訂單":
-		_ = app.finishConfirm(replyToken, source)
+		err := app.finishConfirm(replyToken, source)
+		if err != nil {
+			return err
+		}
+
 	case "成功了！":
 		if _, err := app.bot.ReplyMessage(
 			replyToken,

@@ -37,8 +37,3 @@ docker-run:
 	-e LINECORP_PLATFORM_CHANNEL_CHANNELSECRET=$(SECRET) \
 	-e LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN=$(TOKEN) \
 	yamcha 
-
-release:
-	heroku container:login
-	heroku container:push web
-	heroku container:release web

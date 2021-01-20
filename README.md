@@ -29,15 +29,13 @@ docker run --rm \
 雖然這不是一個複雜的專案，但是個好的開始，對吧 ^__^
 
 ## Deploy New Version
-push master 後會自動部署到 heroku
+push master 後 github actions 會自動部署到 heroku
 
 ## Future
 - migrate
 - gorm v2
-- dev container 自帶 mysql
-- dev container mysql 自帶測試資料
 - test
-- viper
+- viper (force on env)
 - pkg/error
 
 ## Learn More
