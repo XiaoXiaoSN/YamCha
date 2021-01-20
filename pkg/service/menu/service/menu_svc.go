@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"yamcha/pkg/api/menu"
+	"yamcha/pkg/service/menu"
 	"yamcha/pkg/model"
 	"yamcha/pkg/repository"
 )

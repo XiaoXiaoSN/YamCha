@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"yamcha/internal/config"
-	"yamcha/pkg/api/order"
+	"yamcha/pkg/service/order"
 
 	"github.com/labstack/echo/v4"
 	"github.com/line/line-bot-sdk-go/linebot"

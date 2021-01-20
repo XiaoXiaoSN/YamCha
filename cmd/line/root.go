@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"yamcha/internal/config"
-	"yamcha/internal/http"
+	"yamcha/internal/httputil"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -31,7 +31,7 @@ var LineCmd = &cobra.Command{
 		cfg := config.NewConfiguration()
 
 		// create Echo web service
-		e := http.NewEcho(cfg)
+		e := httputil.NewEcho(cfg)
 		err := initService(e, cfg)
 		if err != nil {
 			logrus.Panicln("failed to register Restful API...")
@@ -52,7 +52,7 @@ var LineCmd = &cobra.Command{
 		quit := make(chan os.Signal)
 		signal.Notify(quit, os.Interrupt, os.Kill)
 		<-quit
-		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
 		if err := e.Shutdown(ctx); err != nil {
 			logrus.Fatal(err)

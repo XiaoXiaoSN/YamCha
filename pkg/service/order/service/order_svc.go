@@ -3,7 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"yamcha/pkg/api/order"
+
+	"yamcha/pkg/service/order"
 	"yamcha/pkg/model"
 	"yamcha/pkg/repository"
 

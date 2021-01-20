@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
-	"yamcha/pkg/api/store"
+
 	"yamcha/pkg/model"
 	"yamcha/pkg/repository"
+	"yamcha/pkg/service/store"
 )
 
 // StoreService implement a user service
