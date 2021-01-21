@@ -2,6 +2,7 @@ package line
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 	"time"
@@ -31,7 +32,8 @@ var LineCmd = &cobra.Command{
 
 		// Start server
 		go func() {
-			port := config.Config().Server.Port
+			port := fmt.Sprintf(":%d", config.Config().Server.Port)
+
 			logrus.Infof("service run at port %s", port)
 			if err := app.Echo.Start(port); err != nil {
 				logrus.Warn("shutting down the server, error:", err)

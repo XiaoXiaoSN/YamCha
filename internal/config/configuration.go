@@ -1,20 +1,20 @@
 package config
 
 import (
-	"flag"
-	"io/ioutil"
+	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/jinzhu/configor"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 var globalConfig *Configuration
 
 // Configuration is config
 type Configuration struct {
-	Env    string        `yaml:"env"`
+	Env    string        `yaml:"env" env:"ENVIRONMENT" default:"release"`
 	Server Server        `yaml:"server"`
 	DBCfg  DBConfig      `yaml:"db"`
 	BotCfg LineBotConfig `yaml:"line_bot"`
@@ -22,12 +22,13 @@ type Configuration struct {
 
 // Server ...
 type Server struct {
-	Port string `yaml:"port"`
+	// heroku will bind env PORT as the exporting service
+	Port int `yaml:"port" env:"PORT" default:"18080"`
 }
 
 // DBConfig define the database connection infomation
 type DBConfig struct {
-	ConnectDSN string `yaml:"dsn" description:"priority use the column"`
+	ConnectDSN string `yaml:"dsn" env:"MYSQL_DSN"`
 
 	Username string `yaml:"username"`
 	Password string `yaml:"password"`
@@ -38,13 +39,12 @@ type DBConfig struct {
 
 // LineBotConfig ...
 type LineBotConfig struct {
-	ChannelSecret string `yaml:"channel_secret"`
-	ChannelToken  string `yaml:"channel_token"`
+	ChannelSecret string `yaml:"channel_secret" env:"LINECORP_PLATFORM_CHANNEL_CHANNELSECRET"`
+	ChannelToken  string `yaml:"channel_token" env:"LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN"`
 }
 
 // NewConfiguration create and return a Configuration object
 func NewConfiguration() *Configuration {
-	flag.Parse()
 	cfg := Configuration{}
 
 	var fileName, rootDirPath string
@@ -60,56 +60,23 @@ func NewConfiguration() *Configuration {
 		log.Fatalf("[CONFIG] file error: %s", err.Error())
 	}
 
-	// check config exists
-	file, err := ioutil.ReadFile(filepath.Clean(configPath))
-	if err != nil {
-		log.Fatalf("[CONFIG] read file error: %s", err.Error())
-	}
+	// Enable debug mode or set env `CONFIGOR_DEBUG_MODE` to true when running your application
+	configor.New(&configor.Config{Debug: false}).Load(&cfg, configPath)
 
-	err = yaml.Unmarshal(file, &cfg)
-	if err != nil {
-		log.Fatalf("[CONFIG] yaml unmarshal error: %v", err)
-	}
-
-	cfg.BasicSetting()
-	
+	// fmt.Printf("%+v\n\n", prettyPrint(cfg))
 	globalConfig = &cfg
 	return &cfg
-}
-
-// BasicSetting set default value
-func (cfg *Configuration) BasicSetting() {
-	// set default env
-	if len(cfg.Env) == 0 {
-		cfg.Env = "release"
-	}
-
-	// set default port
-	if len(cfg.Server.Port) == 0 {
-		cfg.Server.Port = ":18180"
-	}
-
-	// for heroku
-	herokuPort := os.Getenv("PORT")
-	if len(herokuPort) != 0 {
-		cfg.Server.Port = ":" + herokuPort
-	}
-
-	// for db connect
-	if dsn := os.Getenv("MYSQL_DSN"); dsn != "" {
-		cfg.DBCfg.ConnectDSN = dsn
-	}
-
-	// for line bot
-	lineChannelSecret := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELSECRET")
-	lineChannelToken := os.Getenv("LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN")
-	cfg.BotCfg = LineBotConfig{
-		ChannelSecret: lineChannelSecret,
-		ChannelToken:  lineChannelToken,
-	}
 }
 
 // Config get the global config
 func Config() Configuration {
 	return *globalConfig
+}
+
+func prettyPrint(data interface{}) string {
+	jsonByte, err := json.MarshalIndent(data, "", "    ")
+	if err != nil {
+		return err.Error()
+	}
+	return fmt.Sprintf("%s\n", jsonByte)
 }

@@ -4,11 +4,16 @@
 ![deploy heroku](https://github.com/XiaoXiaoSN/yamcha/workflows/deploy%20heroku/badge.svg)
 
 ## Getting Started
-啟動需要四個環境變數，需要到 [heroku 設定](https://dashboard.heroku.com/apps/yamcha/settings) Settings > Config Vars
+啟動參數以環境變數設置
 - LINECORP_PLATFORM_CHANNEL_SERVERURL
 - LINECORP_PLATFORM_CHANNEL_CHANNELSECRET
 - LINECORP_PLATFORM_CHANNEL_CHANNELTOKEN
 - MYSQL_DSN
+
+使用 google/wire 依賴注入工具，開發需先安裝
+```
+go get github.com/google/wire/cmd/wire
+```
 
 ### Docker directly
 ```
@@ -35,7 +40,6 @@ push master 後 github actions 會自動部署到 heroku
 - migrate
 - gorm v2
 - test
-- viper (force on env)
 - pkg/error
 
 ## Learn More
