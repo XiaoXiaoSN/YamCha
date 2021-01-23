@@ -3,7 +3,7 @@ package db
 import (
 	"yamcha/pkg/repository"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type dbRepository struct {

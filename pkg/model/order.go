@@ -19,15 +19,15 @@ const (
 
 // Order Object
 type Order struct {
-	ID            int             `gorm:"id" json:"id"`
-	Creator       string          `gorm:"creator_id" json:"creator"`
-	GroupID       string          `gorm:"group_id" json:"group_id"`
-	Status        OrderStatus     `gorm:"status" json:"status"`
-	Price         int             `gorm:"price" json:"price"`
-	BranchStoreID int             `gorm:"branch_store_id" json:"branch_store_id"`
-	Order         json.RawMessage `gorm:"order" json:"order,omitempty"`
-	CreatedAt     time.Time       `gorm:"created_at" json:"created_at"`
-	UpdatedAt     time.Time       `gorm:"updated_at" json:"updated_at"`
+	ID            int             `gorm:"column:id" json:"id"`
+	Creator       string          `gorm:"column:creator_id" json:"creator"`
+	GroupID       string          `gorm:"column:group_id" json:"group_id"`
+	Status        OrderStatus     `gorm:"column:status" json:"status"`
+	Price         int             `gorm:"column:price" json:"price"`
+	BranchStoreID int             `gorm:"column:branch_store_id" json:"branch_store_id"`
+	Order         json.RawMessage `gorm:"column:order" json:"order,omitempty"`
+	CreatedAt     time.Time       `gorm:"column:created_at" json:"created_at"`
+	UpdatedAt     time.Time       `gorm:"column:updated_at" json:"updated_at"`
 	OrderStruct   []PersonalOrder
 }
 
@@ -39,18 +39,18 @@ type OrderParams struct {
 
 // PersonalOrder ...
 type PersonalOrder struct {
-	UserID    string `gorm:"user" form:"user" json:"user"`
-	ProductID string `gorm:"product" form:"product" json:"product"`
-	Size      string `gorm:"size" form:"size" json:"size"`
-	Sweet     string `gorm:"sweet" form:"sweet" json:"sweet"`
-	Ice       string `gorm:"ice" form:"ice" json:"ice"`
-	Price     string `gorm:"price" form:"price" json:"price"`
+	UserID    string `gorm:"column:user" form:"user" json:"user"`
+	ProductID string `gorm:"column:product" form:"product" json:"product"`
+	Size      string `gorm:"column:size" form:"size" json:"size"`
+	Sweet     string `gorm:"column:sweet" form:"sweet" json:"sweet"`
+	Ice       string `gorm:"column:ice" form:"ice" json:"ice"`
+	Price     string `gorm:"column:price" form:"price" json:"price"`
 }
 
 // CreateOrderParams for create a new order
 type CreateOrderParams struct {
-	CreatorID     string          `gorm:"creator_id" form:"creator_id" json:"creator_id"`
-	GroupID       string          `gorm:"group_id" form:"group_id" json:"group_id"`
-	BranchStoreID int             `gorm:"branch_store_id" form:"branch_store_id" json:"branch_store_id"`
-	Order         []PersonalOrder `gorm:"order" json:"order"`
+	CreatorID     string          `gorm:"column:creator_id" form:"creator_id" json:"creator_id"`
+	GroupID       string          `gorm:"column:group_id" form:"group_id" json:"group_id"`
+	BranchStoreID int             `gorm:"column:branch_store_id" form:"branch_store_id" json:"branch_store_id"`
+	Order         []PersonalOrder `gorm:"column:order" json:"order"`
 }

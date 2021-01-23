@@ -4,9 +4,9 @@ import (
 	"os"
 	"yamcha/cmd/line"
 
-	_ "github.com/go-sql-driver/mysql"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	_ "gorm.io/driver/mysql"
 )
 
 var rootCmd = &cobra.Command{

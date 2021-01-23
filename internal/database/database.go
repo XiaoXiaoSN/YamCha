@@ -7,8 +7,9 @@ import (
 	pkgConfig "yamcha/internal/config"
 
 	"github.com/cenk/backoff"
-	"github.com/jinzhu/gorm"
 	log "github.com/sirupsen/logrus"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // NewDatabases init and return write and read DB objects
@@ -23,14 +24,21 @@ func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 	var database *gorm.DB
 	var err error
 	err = backoff.Retry(func() error {
-		database, err = gorm.Open("mysql", cfg.ConnectDSN)
+		dial := mysql.Open(cfg.ConnectDSN)
+
+		database, err = gorm.Open(dial, &gorm.Config{})
 		if err != nil {
 			log.Errorf("db: mysql open failed: %v", err)
 			return err
 		}
-		err = database.DB().Ping()
+		db, err := database.DB()
 		if err != nil {
-			log.Errorf("db: mysql ping error: %v", err)
+			log.Errorf("db: get db error: %v", err)
+			return err
+		}
+		err = db.Ping()
+		if err != nil {
+			log.Errorf("db: ping error: %v", err)
 			return err
 		}
 		return nil
@@ -40,16 +48,8 @@ func NewDatabases(cfg pkgConfig.DBConfig) (*gorm.DB, error) {
 		log.Panicf("db: mysql connect err: %s", err.Error())
 	}
 
-	database.LogMode(true)
-
+	database.Debug()
 	log.Infof("database ping success")
-	database.DB().SetMaxIdleConns(150)
-	database.DB().SetMaxOpenConns(300)
-	database.DB().SetConnMaxLifetime(14400 * time.Second)
-
-	if cfg.Env != "prod" && cfg.Env != "production" {
-		database = database.LogMode(true)
-	}
 
 	return database, nil
 }

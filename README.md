@@ -37,7 +37,6 @@ docker run --rm \
 push master 後 github actions 會自動部署到 heroku
 
 ## Future
-- migrate
 - gorm v2
 - test
 - pkg/error
