@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var globalConfig *Configuration
+var globalConfig = &Configuration{}
 
 // Configuration is config
 type Configuration struct {
@@ -18,6 +18,7 @@ type Configuration struct {
 	Server Server        `yaml:"server"`
 	DBCfg  DBConfig      `yaml:"db"`
 	BotCfg LineBotConfig `yaml:"line_bot"`
+	Sentry SentryConfig  `yaml:"sentry"`
 }
 
 // Server ...
@@ -61,7 +62,13 @@ func NewConfiguration() *Configuration {
 	}
 
 	// Enable debug mode or set env `CONFIGOR_DEBUG_MODE` to true when running your application
-	configor.New(&configor.Config{Debug: false}).Load(&cfg, configPath)
+	err = configor.New(&configor.Config{Debug: false}).Load(&cfg, configPath)
+	if err != nil {
+		log.Fatalf("[CONFIG] configor error: %s", err.Error())
+	}
+
+	// register sentry setting
+	cfg.Sentry.init()
 
 	// fmt.Printf("%+v\n\n", prettyPrint(cfg))
 	globalConfig = &cfg

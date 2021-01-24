@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"time"
 
+	"yamcha/cmd/helper"
 	"yamcha/internal/config"
 	"yamcha/pkg/delivery/api"
 	"yamcha/pkg/delivery/linebot"
@@ -21,6 +22,7 @@ var LineCmd = &cobra.Command{
 	Short: "TODO: 我是 Yamcha 的短短介紹",
 	Long:  `TODO: 我是 Yamcha 的長篇介紹`,
 	Run: func(cmd *cobra.Command, args []string) {
+		defer helper.CmdRecover()
 		ctx := cmd.Context()
 
 		app, err := InitApplication(ctx)

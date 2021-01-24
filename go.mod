@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/cenk/backoff v2.2.1+incompatible
+	github.com/getsentry/sentry-go v0.9.0
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/google/wire v0.4.0
 	github.com/jinzhu/configor v1.2.1

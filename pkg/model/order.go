@@ -28,7 +28,7 @@ type Order struct {
 	Order         json.RawMessage `gorm:"column:order" json:"order,omitempty"`
 	CreatedAt     time.Time       `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt     time.Time       `gorm:"column:updated_at" json:"updated_at"`
-	OrderStruct   []PersonalOrder
+	OrderStruct   []PersonalOrder `gorm:"-"`
 }
 
 // OrderParams for filter order list

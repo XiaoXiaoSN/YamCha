@@ -256,7 +256,6 @@ func (ctl *_controller) BranchStoreListEndpoint(c echo.Context) error {
 
 	storeIDStr := c.Param("storeId")
 	storeID, err := strconv.Atoi(storeIDStr)
-	log.Println("in Branch:", storeID)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
