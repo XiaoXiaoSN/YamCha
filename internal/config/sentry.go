@@ -20,6 +20,6 @@ func (s *SentryConfig) init() {
 		Dsn:   s.SentryDSN,
 		Debug: true,
 	}); err != nil {
-		log.Error("Sentry initialization failed: %v\n", err)
+		log.Errorf("Sentry initialization failed: %v", err)
 	}
 }
