@@ -1,7 +1,6 @@
 package linebot
 
 import (
-	"errors"
 	"fmt"
 
 	"yamcha/internal/config"
@@ -16,11 +15,6 @@ import (
 const (
 	StatusYamchaSleep  int = 0
 	StatusYamchaWakeUp int = 1
-)
-
-var (
-	// ErrUnknown define a Unknown Error
-	ErrUnknown = errors.New("Unknown Error")
 )
 
 // LineBot define basic line bot interface
@@ -59,6 +53,7 @@ func (app *YamchaLineBot) CallbackHandle(c echo.Context) error {
 
 	for _, event := range events {
 		log.Printf("Got event %v", event)
+
 		switch event.Type {
 		case linebot.EventTypeMessage:
 			switch message := event.Message.(type) {

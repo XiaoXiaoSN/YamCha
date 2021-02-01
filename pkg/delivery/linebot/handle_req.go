@@ -67,31 +67,11 @@ func (app *YamchaLineBot) finishConfirm(replyToken string, source *linebot.Event
 }
 
 func (app *YamchaLineBot) wakeUp(message *linebot.TextMessage, replyToken string, source *linebot.EventSource) error {
-	log.Printf("Yamcha wakeup in group: %s", source.GroupID)
-
-	// value := app.orderSvc.GetInt(source.GroupID + "Status")
-	// if value == StatusYamchaSleep {
-	// err := app.orderSvc.Set(source.GroupID+"Status", 1)
-	// if err != nil {
-	// 	return err
-	// }
+	log.Printf("Yamcha has waked up in group: %s", source.GroupID)
 
 	if err := app.replyFlex(replyToken, source.GroupID); err != nil {
 		return err
 	}
-
-	// } else if value == StatusYamchaWakeUp {
-	// 	err := app.Storage.Set(source.GroupID+"Status", 1)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-
-	// 	if err := app.replyText(replyToken, "目前點餐的訂單有... (TODO)"); err != nil {
-	// 		return err
-	// 	}
-	// } else {
-	// 	return ErrUnknown
-	// }
 
 	return nil
 }
