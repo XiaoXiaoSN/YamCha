@@ -1,7 +1,6 @@
 package api
 
 import (
-	"log"
 	"net/http"
 	"strconv"
 
@@ -68,15 +67,17 @@ func NewController(
 func (ctl *_controller) CreateOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	cParam := model.CreateOrderParams{}
+	var cParam model.CreateOrderParams
 	err := c.Bind(&cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
+
 	orderObject, err := ctl.orderSvc.CreateOrder(ctx, cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
+
 	return c.JSON(http.StatusCreated, httputil.H{
 		"data": orderObject,
 	})
@@ -86,8 +87,7 @@ func (ctl *_controller) CreateOrderEndpoint(c echo.Context) error {
 func (ctl *_controller) GetOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	orderIDStr := c.Param("orderId")
-	orderID, err := strconv.Atoi(orderIDStr)
+	orderID, err := strconv.Atoi(c.Param("orderId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
@@ -107,7 +107,7 @@ func (ctl *_controller) GetOrderEndpoint(c echo.Context) error {
 func (ctl *_controller) OrderListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	findParams := model.OrderParams{}
+	var findParams model.OrderParams
 	err := c.Bind(&findParams)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
@@ -128,16 +128,17 @@ func (ctl *_controller) OrderListEndpoint(c echo.Context) error {
 func (ctl *_controller) UpdateOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	cParam := model.CreateOrderParams{}
+	var cParam model.CreateOrderParams
 	err := c.Bind(&cParam)
-	log.Println(cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
+
 	orderObject, err := ctl.orderSvc.UpdateOrder(ctx, cParam)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
+
 	return c.JSON(http.StatusCreated, httputil.H{
 		"data": orderObject,
 	})
@@ -148,8 +149,7 @@ func (ctl *_controller) UpdateOrderEndpoint(c echo.Context) error {
 func (ctl *_controller) DeleteOrderEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	orderIDStr := c.Param("orderId")
-	orderID, err := strconv.Atoi(orderIDStr)
+	orderID, err := strconv.Atoi(c.Param("orderId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
@@ -168,19 +168,18 @@ func (ctl *_controller) DeleteOrderEndpoint(c echo.Context) error {
 func (ctl *_controller) CreateStoreEndpoint(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 
-	newStore := model.Store{}
+	var newStore model.Store
 	if err = c.Bind(&newStore); err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
 
-	var storeData model.Store
-	storeData, err = ctl.storeSvc.CreateStore(ctx, newStore)
+	err = ctl.storeSvc.CreateStore(ctx, &newStore)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusCreated, httputil.H{
-		"data": storeData,
+		"data": newStore,
 	})
 }
 
@@ -189,26 +188,24 @@ func (ctl *_controller) CreateStoreEndpoint(c echo.Context) (err error) {
 func (ctl *_controller) CreateBranchStoreEndpoint(c echo.Context) (err error) {
 	ctx := c.Request().Context()
 
-	newBranchStore := model.BranchStore{}
+	var newBranchStore model.BranchStore
 	if err = c.Bind(&newBranchStore); err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
 
-	storeIDStr := c.Param("storeId")
-	_, err = strconv.Atoi(storeIDStr)
+	storeID, err := strconv.Atoi(c.Param("storeId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
-	newBranchStore.StoreGroupID = storeIDStr
+	newBranchStore.StoreGroupID = storeID
 
-	var storeData model.BranchStore
-	storeData, err = ctl.storeSvc.CreateBranchStore(ctx, newBranchStore)
+	err = ctl.storeSvc.CreateBranchStore(ctx, &newBranchStore)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusCreated, httputil.H{
-		"data": storeData,
+		"data": newBranchStore,
 	})
 }
 
@@ -232,8 +229,7 @@ func (ctl *_controller) StoreListEndpoint(c echo.Context) error {
 func (ctl *_controller) GetStoreEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("storeId")
-	storeID, err := strconv.Atoi(storeIDStr)
+	storeID, err := strconv.Atoi(c.Param("storeId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
@@ -254,8 +250,7 @@ func (ctl *_controller) GetStoreEndpoint(c echo.Context) error {
 func (ctl *_controller) BranchStoreListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("storeId")
-	storeID, err := strconv.Atoi(storeIDStr)
+	storeID, err := strconv.Atoi(c.Param("storeId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
@@ -275,7 +270,7 @@ func (ctl *_controller) BranchStoreListEndpoint(c echo.Context) error {
 func (ctl *_controller) CreateUserEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	u := model.User{}
+	var u model.User
 	err := c.Bind(&u)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
@@ -285,7 +280,7 @@ func (ctl *_controller) CreateUserEndpoint(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
 
-	err = ctl.userSvc.CreateUser(ctx, u)
+	err = ctl.userSvc.CreateUser(ctx, &u)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
@@ -315,19 +310,18 @@ func (ctl *_controller) UserListEndpoint(c echo.Context) error {
 func (ctl *_controller) ExtraListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("branchStoreId")
-	orderID, err := strconv.Atoi(storeIDStr)
+	orderID, err := strconv.Atoi(c.Param("branchStoreId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}
 
-	orderObject, err := ctl.extraSvc.GetExtraList(ctx, orderID)
+	extraList, err := ctl.extraSvc.GetExtraList(ctx, orderID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, httputil.H{"error": err.Error()})
 	}
 
 	return c.JSON(http.StatusOK, httputil.H{
-		"data": orderObject,
+		"data": extraList,
 	})
 }
 
@@ -336,9 +330,7 @@ func (ctl *_controller) ExtraListEndpoint(c echo.Context) error {
 func (ctl *_controller) MenuListEndpoint(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	storeIDStr := c.Param("branchStoreId")
-	log.Println(storeIDStr)
-	orderID, err := strconv.Atoi(storeIDStr)
+	orderID, err := strconv.Atoi(c.Param("branchStoreId"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, httputil.H{"error": err.Error()})
 	}

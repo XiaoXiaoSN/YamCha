@@ -4,11 +4,9 @@ import (
 	"context"
 	"encoding/json"
 
-	"yamcha/pkg/service/order"
 	"yamcha/pkg/model"
 	"yamcha/pkg/repository"
-
-	log "github.com/sirupsen/logrus"
+	"yamcha/pkg/service/order"
 )
 
 // OrderService implement a order service
@@ -25,7 +23,7 @@ func NewOrderService(repo repository.Repository) order.Service {
 
 // CreateOrder ...
 func (svc *OrderService) CreateOrder(ctx context.Context, cParams model.CreateOrderParams) (model.Order, error) {
-	orderObject := model.Order{
+	order := model.Order{
 		GroupID:       cParams.GroupID,
 		Creator:       cParams.CreatorID,
 		BranchStoreID: cParams.BranchStoreID,
@@ -33,13 +31,16 @@ func (svc *OrderService) CreateOrder(ctx context.Context, cParams model.CreateOr
 		Order:         []byte("{}"),
 		Status:        model.OrderStatusOpen,
 	}
+	err := svc.repo.CreateOrder(ctx, &order)
+	if err != nil {
+		return model.Order{}, err
+	}
 
-	return svc.repo.CreateOrder(ctx, orderObject)
+	return order, nil
 }
 
 // GetGroupOrder ...
 func (svc *OrderService) GetGroupOrder(groupID string) (model.Order, error) {
-	log.Println("in func")
 	return svc.repo.GetGroupOrder(groupID)
 }
 

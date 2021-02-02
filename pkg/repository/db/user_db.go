@@ -6,8 +6,8 @@ import (
 )
 
 // CreateUser ...
-func (repo *dbRepository) CreateUser(ctx context.Context, u model.User) error {
-	err := repo.db.Model(&model.User{}).Create(&u).Error
+func (repo *dbRepository) CreateUser(ctx context.Context, u *model.User) error {
+	err := repo.db.Model(&model.User{}).Create(u).Error
 	if err != nil {
 		return err
 	}

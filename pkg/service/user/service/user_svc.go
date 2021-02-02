@@ -21,7 +21,7 @@ func NewUserService(repo repository.Repository) user.Service {
 }
 
 // CreateUser ...
-func (svc *UserService) CreateUser(ctx context.Context, u model.User) error {
+func (svc *UserService) CreateUser(ctx context.Context, u *model.User) error {
 	return svc.repo.CreateUser(ctx, u)
 }
 

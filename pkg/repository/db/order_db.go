@@ -9,14 +9,12 @@ import (
 )
 
 // CreateOrder ...
-func (repo *dbRepository) CreateOrder(ctx context.Context, newOrder model.Order) (model.Order, error) {
-	log.Println(newOrder)
-	err := repo.db.Model(&model.Order{}).Create(&newOrder).Error
+func (repo *dbRepository) CreateOrder(ctx context.Context, newOrder *model.Order) error {
+	err := repo.db.Model(&model.Order{}).Create(newOrder).Error
 	if err != nil {
-		return model.Order{}, err
+		return err
 	}
-
-	return newOrder, nil
+	return nil
 }
 
 // GetOrder ...
@@ -74,7 +72,8 @@ func (repo *dbRepository) OrderList(ctx context.Context, params model.OrderParam
 func (repo *dbRepository) DeleteOrder(ctx context.Context, orderID int) error {
 	// orderObject := model.Order{}
 	err := repo.db.Model(&model.Order{}).
-		Where("id = ? AND status = 1", orderID).
+		Where("id = ?", orderID).
+		Where("status = ?", model.OrderStatusOpen).
 		Update("status", model.OrderStatusClose).Error
 	if err != nil {
 		return err
@@ -86,7 +85,8 @@ func (repo *dbRepository) DeleteOrder(ctx context.Context, orderID int) error {
 // UpdateOrder ...
 func (repo *dbRepository) UpdateOrder(ctx context.Context, newOrder model.Order) (model.Order, error) {
 	err := repo.db.Model(&model.Order{}).
-		Where("group_id = ? AND status = 1", newOrder.GroupID).
+		Where("group_id = ?", newOrder.GroupID).
+		Where("status = ?", model.OrderStatusOpen).
 		Update("order", newOrder.Order).Error
 	if err != nil {
 		return model.Order{}, err
@@ -99,7 +99,8 @@ func (repo *dbRepository) UpdateOrder(ctx context.Context, newOrder model.Order)
 func (repo *dbRepository) FinishOrder(groupID string) ([]model.PersonalOrder, error) {
 	orderList := model.Order{}
 	err := repo.db.Model(&model.Order{}).
-		Where("group_id = ? AND status = 1", groupID).
+		Where("group_id = ?", groupID).
+		Where("status = ?", model.OrderStatusOpen).
 		Find(&orderList).
 		Update("status", model.OrderStatusEnd).Error
 

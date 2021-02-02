@@ -16,7 +16,9 @@ func (repo *dbRepository) GetMenuList(ctx context.Context, branchStoreID int) ([
 	}
 
 	// search everything with store id
-	err := repo.db.Model(&model.Menu{}).Where("store_id = ?", branchStoreObject.StoreGroupID).Find(&menuObject).Error
+	err := repo.db.Model(&model.Menu{}).
+		Where("store_id = ?", branchStoreObject.StoreGroupID).
+		Find(&menuObject).Error
 	if err != nil {
 		return []model.Menu{}, err
 	}

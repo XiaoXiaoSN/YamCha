@@ -21,7 +21,7 @@ func NewStoreService(repo repository.Repository) store.Service {
 }
 
 // CreateStore ...
-func (svc *StoreService) CreateStore(ctx context.Context, targetStore model.Store) (model.Store, error) {
+func (svc *StoreService) CreateStore(ctx context.Context, targetStore *model.Store) error {
 	return svc.repo.CreateStore(ctx, targetStore)
 }
 
@@ -41,7 +41,7 @@ func (svc *StoreService) BranchStoreList(ctx context.Context, storeID int) ([]mo
 }
 
 // CreateBranchStore ...
-func (svc *StoreService) CreateBranchStore(ctx context.Context, branchStore model.BranchStore) (model.BranchStore, error) {
+func (svc *StoreService) CreateBranchStore(ctx context.Context, branchStore *model.BranchStore) error {
 	return svc.repo.CreateBranchStore(ctx, branchStore)
 
 }

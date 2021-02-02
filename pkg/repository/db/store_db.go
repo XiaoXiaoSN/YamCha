@@ -2,25 +2,27 @@ package db
 
 import (
 	"context"
-	"log"
 	"yamcha/pkg/model"
 )
 
 // CreateStore ...
-func (repo *dbRepository) CreateStore(ctx context.Context, targetStore model.Store) (model.Store, error) {
-	err := repo.db.Model(&model.Store{}).Create(&targetStore).Error
+func (repo *dbRepository) CreateStore(ctx context.Context, targetStore *model.Store) error {
+	err := repo.db.Model(&model.Store{}).Create(targetStore).Error
 	if err != nil {
-		return targetStore, err
+		return err
 	}
-
-	return targetStore, nil
+	return nil
 }
 
 // GetStore ...
 func (repo *dbRepository) GetStore(ctx context.Context, storeID int) (model.Store, error) {
 	targetStore := model.Store{}
 
-	err := repo.db.Model(&model.Store{}).Preload("BranchStores").Find(&targetStore).Error
+	db := repo.db.Model(&model.Store{})
+	db = db.Preload("BranchStores")
+
+	err := db.Where("id = ?", storeID).
+		First(&targetStore).Error
 	if err != nil {
 		// TODO: handle mysql 1602 duplicate error (should return http status 404)
 		return model.Store{}, err
@@ -35,8 +37,6 @@ func (repo *dbRepository) StoreList(ctx context.Context) ([]model.Store, error) 
 
 	err := repo.db.Model(&model.Store{}).Find(&storeList).Error
 	if err != nil {
-		// log.Printf("Error: %s", err)
-
 		return []model.Store{}, err
 	}
 
@@ -45,11 +45,11 @@ func (repo *dbRepository) StoreList(ctx context.Context) ([]model.Store, error) 
 
 // BranchStoreList ...
 func (repo *dbRepository) BranchStoreList(ctx context.Context, storeID int) ([]model.BranchStore, error) {
-	log.Println("in Branch:", storeID)
 	branchStoreList := []model.BranchStore{}
 
-	err := repo.db.Model(&model.BranchStore{}).Where("store_group_id = ?", storeID).Find(&branchStoreList).Error
-	log.Println("in Branch:", branchStoreList)
+	err := repo.db.Model(&model.BranchStore{}).
+		Where("store_group_id = ?", storeID).
+		Find(&branchStoreList).Error
 	if err != nil {
 		return []model.BranchStore{}, err
 	}
@@ -58,11 +58,11 @@ func (repo *dbRepository) BranchStoreList(ctx context.Context, storeID int) ([]m
 }
 
 // CreateBranchStore ...
-func (repo *dbRepository) CreateBranchStore(ctx context.Context, branchStore model.BranchStore) (model.BranchStore, error) {
-	err := repo.db.Model(&model.Store{}).Create(&branchStore).Error
+func (repo *dbRepository) CreateBranchStore(ctx context.Context, branchStore *model.BranchStore) error {
+	err := repo.db.Model(&model.BranchStore{}).
+		Create(branchStore).Error
 	if err != nil {
-		return branchStore, err
+		return err
 	}
-
-	return branchStore, nil
+	return nil
 }

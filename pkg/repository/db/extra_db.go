@@ -5,25 +5,24 @@ import (
 	"yamcha/pkg/model"
 )
 
-// GetExtraList ...
+// GetExtraList get what kind extras be provided in the store
 func (repo *dbRepository) GetExtraList(ctx context.Context, branchStoreID int) ([]model.Extra, error) {
-	extraArray := []model.Extra{}
-	branchStoreObject := model.BranchStore{}
+	extraList := []model.Extra{}
+	branchStore := model.BranchStore{}
 
-	errorMsg := repo.db.Model(&model.BranchStore{}).
+	err := repo.db.Model(&model.BranchStore{}).
 		Where("id = ?", branchStoreID).
-		Find(&branchStoreObject).Error
-	if errorMsg != nil {
-		return []model.Extra{}, errorMsg
-	}
-
-	// search everything with store id
-	err := repo.db.Model(&model.Extra{}).
-		Where("store_id = ?", branchStoreObject.StoreGroupID).
-		Find(&extraArray).Error
+		Find(&branchStore).Error
 	if err != nil {
-		return []model.Extra{}, err
+		return nil, err
 	}
 
-	return extraArray, nil
+	err = repo.db.Model(&model.Extra{}).
+		Where("store_id = ?", branchStore.StoreGroupID).
+		Find(&extraList).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return extraList, nil
 }
