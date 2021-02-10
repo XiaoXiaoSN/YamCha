@@ -25,7 +25,7 @@ func NewOrderService(repo repository.Repository) order.Service {
 func (svc *OrderService) CreateOrder(ctx context.Context, cParams model.CreateOrderParams) (model.Order, error) {
 	order := model.Order{
 		GroupID:       cParams.GroupID,
-		Creator:       cParams.CreatorID,
+		CreatorID:     cParams.CreatorID,
 		BranchStoreID: cParams.BranchStoreID,
 		Price:         0,
 		Order:         []byte("{}"),
@@ -40,8 +40,8 @@ func (svc *OrderService) CreateOrder(ctx context.Context, cParams model.CreateOr
 }
 
 // GetGroupOrder ...
-func (svc *OrderService) GetGroupOrder(groupID string) (model.Order, error) {
-	return svc.repo.GetGroupOrder(groupID)
+func (svc *OrderService) GetGroupOrder(ctx context.Context, groupID string) (model.Order, error) {
+	return svc.repo.GetGroupOrder(ctx, groupID)
 }
 
 // GetOrder ...
@@ -63,11 +63,11 @@ func (svc *OrderService) DeleteOrder(ctx context.Context, orderID int) error {
 func (svc *OrderService) UpdateOrder(ctx context.Context, cParams model.CreateOrderParams) (model.Order, error) {
 	stringJSON, _ := json.Marshal(cParams.Order)
 	orderObject := model.Order{
-		GroupID: cParams.GroupID,
-		Creator: cParams.CreatorID,
-		Price:   0,
-		Status:  model.OrderStatusOpen,
-		Order:   []byte(stringJSON),
+		GroupID:   cParams.GroupID,
+		CreatorID: cParams.CreatorID,
+		Price:     0,
+		Status:    model.OrderStatusOpen,
+		Order:     []byte(stringJSON),
 	}
 	return svc.repo.UpdateOrder(ctx, orderObject)
 }

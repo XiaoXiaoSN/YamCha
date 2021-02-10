@@ -244,3 +244,112 @@ func (suite *repoTestSuite) TestCreateBranchStore() {
 	err = suite.sqlMock.ExpectationsWereMet()
 	suite.Require().NoError(err)
 }
+
+/*******************************
+ * Order Repository
+ *******************************/
+
+func (suite *repoTestSuite) TestCreateOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	var nextID int64 = 2
+	suite.sqlMock.ExpectExec("INSERT INTO `orders`").
+		WillReturnResult(sqlmock.NewResult(nextID, 1))
+
+	// excute function
+	var resource = model.Order{
+		CreatorID: "mock",
+		GroupID:   "groupID",
+	}
+	err := suite.repo.CreateOrder(ctx, &resource)
+	suite.Require().NoError(err)
+	suite.Require().Equal(resource.ID, int(nextID))
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestGetOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	var resource = model.Order{
+		ID:        12,
+		CreatorID: "mock",
+		GroupID:   "groupID",
+	}
+	// mock store
+	row := sqlmock.NewRows([]string{"id", "creator_id", "group_id"}).
+		AddRow(resource.ID, resource.CreatorID, resource.GroupID)
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders` WHERE id = ?(.*)").
+		WithArgs(resource.ID).
+		WillReturnRows(row)
+
+	// excute function
+	store, err := suite.repo.GetOrder(ctx, resource.ID)
+	suite.Require().NoError(err)
+	suite.Require().Exactly(resource, store)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestGetGroupOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	var resource = model.Order{
+		ID:        12,
+		CreatorID: "mock",
+		GroupID:   "groupID",
+		Status:    model.OrderStatusOpen,
+	}
+	// mock store
+	row := sqlmock.NewRows([]string{"id", "creator_id", "group_id", "status"}).
+		AddRow(resource.ID, resource.CreatorID, resource.GroupID, resource.Status)
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders`(.*)").
+		WillReturnRows(row)
+
+	// excute function
+	store, err := suite.repo.GetGroupOrder(ctx, resource.GroupID)
+	suite.Require().NoError(err)
+	suite.Require().Exactly(resource, store)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestOrderList() {
+	ctx := context.Background()
+
+	// prepare mock
+	var exceptResources = []model.Order{
+		{ID: 1, GroupID: "first", CreatorID: "mock"},
+		{ID: 2, GroupID: "second", CreatorID: "mock"},
+	}
+	rows := sqlmock.NewRows([]string{"id", "group_id", "creator_id"})
+	for _, u := range exceptResources {
+		rows.AddRow(u.ID, u.GroupID, u.CreatorID)
+	}
+
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders`").
+		WillReturnRows(rows)
+
+	// excute function
+	params := model.OrderParams{
+		//
+	}
+	resourceList, err := suite.repo.OrderList(ctx, params)
+	suite.Require().NoError(err)
+	for _, r := range exceptResources {
+		suite.Require().Contains(resourceList, r)
+	}
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}

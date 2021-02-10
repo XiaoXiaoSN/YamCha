@@ -3,7 +3,6 @@ package db
 import (
 	"context"
 	"encoding/json"
-	"log"
 
 	"yamcha/pkg/model"
 )
@@ -32,18 +31,18 @@ func (repo *dbRepository) GetOrder(ctx context.Context, orderID int) (model.Orde
 }
 
 // GetGroupOrder ...
-func (repo *dbRepository) GetGroupOrder(groupID string) (model.Order, error) {
-	orderObject := model.Order{}
-	log.Println("GroupId", groupID)
+func (repo *dbRepository) GetGroupOrder(ctx context.Context, groupID string) (model.Order, error) {
+	var order model.Order
+
 	err := repo.db.Model(&model.Order{}).
-		Where("group_id = ? AND status = 1", groupID).
-		First(&orderObject).Error
-	log.Printf("GroupId %+v", orderObject)
+		Where("group_id = ?", groupID).
+		Where("status = ?", model.OrderStatusOpen).
+		First(&order).Error
 	if err != nil {
 		return model.Order{}, err
 	}
 
-	return orderObject, nil
+	return order, nil
 }
 
 // OrderList ...
@@ -52,7 +51,7 @@ func (repo *dbRepository) OrderList(ctx context.Context, params model.OrderParam
 
 	model := repo.db.Model(&model.Order{})
 
-	// inject the filters
+	// parse filters
 	if params.CreatorID != nil {
 		model = model.Where("creator_id = ?", params.CreatorID)
 	}

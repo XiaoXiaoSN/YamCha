@@ -18,9 +18,10 @@ const (
 )
 
 // Order Object
+// TODO: 也許有些地方需要加一些 uniq key
 type Order struct {
 	ID            int             `gorm:"column:id" json:"id"`
-	Creator       string          `gorm:"column:creator_id" json:"creator"`
+	CreatorID     string          `gorm:"column:creator_id" json:"creator"`
 	GroupID       string          `gorm:"column:group_id" json:"group_id"`
 	Status        OrderStatus     `gorm:"column:status" json:"status"`
 	Price         int             `gorm:"column:price" json:"price"`

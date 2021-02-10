@@ -22,7 +22,7 @@ type Repository interface {
 
 	// order
 	GetOrder(ctx context.Context, orderID int) (model.Order, error)
-	GetGroupOrder(groupID string) (model.Order, error)
+	GetGroupOrder(ctx context.Context, groupID string) (model.Order, error)
 	OrderList(ctx context.Context, params model.OrderParams) ([]model.Order, error)
 	CreateOrder(ctx context.Context, order *model.Order) error
 	UpdateOrder(ctx context.Context, order model.Order) (model.Order, error)

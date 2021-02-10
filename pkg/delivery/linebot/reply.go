@@ -1,6 +1,7 @@
 package linebot
 
 import (
+	"context"
 	"strconv"
 	"strings"
 
@@ -366,8 +367,10 @@ func (app *YamchaLineBot) replyFinishConfirm(replyToken string, groupID string) 
 }
 
 func (app *YamchaLineBot) replyFlex(replyToken string, groupID string) error {
+	ctx := context.Background()
+
 	//  check if order exists
-	if orderData, errMsg := app.orderSvc.GetGroupOrder(groupID); errMsg != nil {
+	if orderData, errMsg := app.orderSvc.GetGroupOrder(ctx, groupID); errMsg != nil {
 
 		log.Println("err:", errMsg)
 
