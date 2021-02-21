@@ -73,6 +73,6 @@ func (svc *OrderService) UpdateOrder(ctx context.Context, cParams model.CreateOr
 }
 
 // FinishOrder ...
-func (svc *OrderService) FinishOrder(groupID string) ([]model.PersonalOrder, error) {
-	return svc.repo.FinishOrder(groupID)
+func (svc *OrderService) FinishOrder(ctx context.Context, groupID string) ([]model.PersonalOrder, error) {
+	return svc.repo.FinishOrder(ctx, groupID)
 }

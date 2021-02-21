@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"yamcha/internal/gormutil"
 	"yamcha/pkg/model"
 	"yamcha/pkg/repository"
 	"yamcha/pkg/repository/db"
@@ -348,6 +349,142 @@ func (suite *repoTestSuite) TestOrderList() {
 	for _, r := range exceptResources {
 		suite.Require().Contains(resourceList, r)
 	}
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestDeleteOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	resourceID := 1
+	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE id = ?(.*)").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// excute function
+	err := suite.repo.DeleteOrder(ctx, resourceID)
+	suite.Require().NoError(err)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestUpdateOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	resource := model.Order{
+		GroupID: "gID",
+		Status:  model.OrderStatusOpen,
+		Order:   gormutil.JSON(`{"key": "value"}`),
+	}
+	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE group_id = ?(.*)").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// excute function
+	_, err := suite.repo.UpdateOrder(ctx, resource)
+	suite.Require().NoError(err)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestFinishOrder() {
+	ctx := context.Background()
+
+	// prepare mock
+	var resource = model.Order{
+		ID:        12,
+		CreatorID: "mock",
+		GroupID:   "groupID",
+		Status:    model.OrderStatusOpen,
+		Order:     gormutil.JSON("[]"),
+	}
+	row := sqlmock.NewRows([]string{"id", "creator_id", "group_id", "status", "order"}).
+		AddRow(resource.ID, resource.CreatorID, resource.GroupID, resource.Status, resource.Order)
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders`(.*)").
+		WillReturnRows(row)
+
+	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE group_id = ?(.*)").
+		WillReturnResult(sqlmock.NewResult(1, 1))
+
+	// excute function
+	_, err := suite.repo.FinishOrder(ctx, resource.GroupID)
+	suite.Require().NoError(err)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestGetMenuList() {
+	ctx := context.Background()
+
+	// prepare mock
+	var branchStore = model.BranchStore{
+		ID:           1,
+		StoreGroupID: 2,
+	}
+	row := sqlmock.NewRows([]string{"id", "store_group_id"}).
+		AddRow(branchStore.ID, branchStore.StoreGroupID)
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `branch_stores`(.*)").
+		WillReturnRows(row)
+
+	var menuList = []model.Menu{
+		{ID: 1, Name: "first", StoreID: "2"},
+		{ID: 2, Name: "second", StoreID: "2"},
+	}
+	rows := sqlmock.NewRows([]string{"id", "name", "store_id"})
+	for _, m := range menuList {
+		rows.AddRow(m.ID, m.Name, m.StoreID)
+	}
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `menus` WHERE store_id = ?").
+		WithArgs(branchStore.StoreGroupID).
+		WillReturnRows(rows)
+
+	// excute function
+	menuResult, err := suite.repo.GetMenuList(ctx, branchStore.ID)
+	suite.Require().NoError(err)
+	suite.Require().Exactly(menuList, menuResult)
+
+	// we make sure that all expectations were met
+	err = suite.sqlMock.ExpectationsWereMet()
+	suite.Require().NoError(err)
+}
+
+func (suite *repoTestSuite) TestGetExtraList() {
+	ctx := context.Background()
+
+	// prepare mock
+	var branchStore = model.BranchStore{
+		ID:           1,
+		StoreGroupID: 2,
+	}
+	row := sqlmock.NewRows([]string{"id", "store_group_id"}).
+		AddRow(branchStore.ID, branchStore.StoreGroupID)
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `branch_stores`(.*)").
+		WillReturnRows(row)
+
+	var extraList = []model.Extra{
+		{ID: 1, Name: "first", StoreID: "2", Price: 5},
+		{ID: 2, Name: "second", StoreID: "2", Price: 10},
+	}
+	rows := sqlmock.NewRows([]string{"id", "name", "store_id", "price"})
+	for _, m := range extraList {
+		rows.AddRow(m.ID, m.Name, m.StoreID, m.Price)
+	}
+	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `extras` WHERE store_id = ?").
+		WithArgs(branchStore.StoreGroupID).
+		WillReturnRows(rows)
+
+	// excute function
+	extraResult, err := suite.repo.GetExtraList(ctx, branchStore.ID)
+	suite.Require().NoError(err)
+	suite.Require().Exactly(extraList, extraResult)
 
 	// we make sure that all expectations were met
 	err = suite.sqlMock.ExpectationsWereMet()

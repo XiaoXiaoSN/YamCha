@@ -13,5 +13,5 @@ type Service interface {
 	CreateOrder(ctx context.Context, createOrderparams model.CreateOrderParams) (model.Order, error)
 	UpdateOrder(ctx context.Context, createOrderparams model.CreateOrderParams) (model.Order, error)
 	DeleteOrder(ctx context.Context, orderID int) error
-	FinishOrder(groupID string) ([]model.PersonalOrder, error)
+	FinishOrder(ctx context.Context, groupID string) ([]model.PersonalOrder, error)
 }

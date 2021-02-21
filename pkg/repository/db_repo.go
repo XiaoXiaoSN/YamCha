@@ -27,7 +27,7 @@ type Repository interface {
 	CreateOrder(ctx context.Context, order *model.Order) error
 	UpdateOrder(ctx context.Context, order model.Order) (model.Order, error)
 	DeleteOrder(ctx context.Context, orderID int) error
-	FinishOrder(groupID string) ([]model.PersonalOrder, error)
+	FinishOrder(ctx context.Context, groupID string) ([]model.PersonalOrder, error)
 
 	// menu
 	GetMenuList(ctx context.Context, storeID int) ([]model.Menu, error)

@@ -10,13 +10,15 @@ func (repo *dbRepository) GetMenuList(ctx context.Context, branchStoreID int) ([
 	branchStoreObject := model.BranchStore{}
 	menuObject := []model.Menu{}
 
-	errorMsg := repo.db.Model(&model.BranchStore{}).Where("id = ?", branchStoreID).Find(&branchStoreObject).Error
-	if errorMsg != nil {
-		return []model.Menu{}, errorMsg
+	err := repo.db.Model(&model.BranchStore{}).
+		Where("id = ?", branchStoreID).
+		Find(&branchStoreObject).Error
+	if err != nil {
+		return []model.Menu{}, err
 	}
 
 	// search everything with store id
-	err := repo.db.Model(&model.Menu{}).
+	err = repo.db.Model(&model.Menu{}).
 		Where("store_id = ?", branchStoreObject.StoreGroupID).
 		Find(&menuObject).Error
 	if err != nil {
@@ -24,5 +26,4 @@ func (repo *dbRepository) GetMenuList(ctx context.Context, branchStoreID int) ([
 	}
 
 	return menuObject, nil
-
 }

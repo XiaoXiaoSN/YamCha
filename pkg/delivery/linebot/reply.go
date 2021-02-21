@@ -309,8 +309,9 @@ func (app *YamchaLineBot) replyText(replyToken, text string) error {
 }
 
 func (app *YamchaLineBot) replyFinishConfirm(replyToken string, groupID string) error {
+	ctx := context.Background()
 
-	listItem, err := app.orderSvc.FinishOrder(groupID)
+	listItem, err := app.orderSvc.FinishOrder(ctx, groupID)
 	if err != nil {
 		if _, err := app.bot.ReplyMessage(
 			replyToken,

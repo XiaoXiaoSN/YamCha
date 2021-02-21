@@ -7,8 +7,8 @@ import (
 
 // GetExtraList get what kind extras be provided in the store
 func (repo *dbRepository) GetExtraList(ctx context.Context, branchStoreID int) ([]model.Extra, error) {
-	extraList := []model.Extra{}
 	branchStore := model.BranchStore{}
+	extraList := []model.Extra{}
 
 	err := repo.db.Model(&model.BranchStore{}).
 		Where("id = ?", branchStoreID).

@@ -1,8 +1,8 @@
 package model
 
 import (
-	"encoding/json"
 	"time"
+	"yamcha/internal/gormutil"
 )
 
 // OrderStatus ..
@@ -26,7 +26,7 @@ type Order struct {
 	Status        OrderStatus     `gorm:"column:status" json:"status"`
 	Price         int             `gorm:"column:price" json:"price"`
 	BranchStoreID int             `gorm:"column:branch_store_id" json:"branch_store_id"`
-	Order         json.RawMessage `gorm:"column:order" json:"order,omitempty"`
+	Order         gormutil.JSON   `gorm:"column:order" json:"order,omitempty"`
 	CreatedAt     time.Time       `gorm:"column:created_at" json:"created_at"`
 	UpdatedAt     time.Time       `gorm:"column:updated_at" json:"updated_at"`
 	OrderStruct   []PersonalOrder `gorm:"-"`

@@ -82,32 +82,29 @@ func (repo *dbRepository) DeleteOrder(ctx context.Context, orderID int) error {
 }
 
 // UpdateOrder ...
-func (repo *dbRepository) UpdateOrder(ctx context.Context, newOrder model.Order) (model.Order, error) {
+func (repo *dbRepository) UpdateOrder(ctx context.Context, order model.Order) (model.Order, error) {
 	err := repo.db.Model(&model.Order{}).
-		Where("group_id = ?", newOrder.GroupID).
+		Where("group_id = ?", order.GroupID).
 		Where("status = ?", model.OrderStatusOpen).
-		Update("order", newOrder.Order).Error
+		Update("order", order.Order).Error
 	if err != nil {
 		return model.Order{}, err
 	}
 
-	return newOrder, nil
+	return order, nil
 }
 
 // FinishOrder ...
-func (repo *dbRepository) FinishOrder(groupID string) ([]model.PersonalOrder, error) {
-	orderList := model.Order{}
+func (repo *dbRepository) FinishOrder(ctx context.Context, groupID string) ([]model.PersonalOrder, error) {
+	order := model.Order{}
 	err := repo.db.Model(&model.Order{}).
 		Where("group_id = ?", groupID).
 		Where("status = ?", model.OrderStatusOpen).
-		Find(&orderList).
+		Find(&order).
 		Update("status", model.OrderStatusEnd).Error
 
 	personalOrders := make([]model.PersonalOrder, 0)
-	json.Unmarshal(orderList.Order, &personalOrders)
-
-	orderList.OrderStruct = personalOrders
-
+	err = json.Unmarshal(order.Order, &personalOrders)
 	if err != nil {
 		return []model.PersonalOrder{}, err
 	}
