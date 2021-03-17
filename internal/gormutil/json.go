@@ -7,6 +7,7 @@ import (
 	"fmt"
 )
 
+// JSON type extend []byte as sql.Scanner
 type JSON json.RawMessage
 
 // Scan scan value into Jsonb, implements sql.Scanner interface
