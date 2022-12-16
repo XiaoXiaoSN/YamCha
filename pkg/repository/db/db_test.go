@@ -60,7 +60,7 @@ func (suite *repoTestSuite) TestCreateUser() {
 	suite.sqlMock.ExpectExec("INSERT INTO `users`").
 		WillReturnResult(sqlmock.NewResult(nextID, 1))
 
-	// excute function
+	// execute function
 	var resource = model.User{
 		Name:      "hello",
 		LineID:    "lineID",
@@ -92,7 +92,7 @@ func (suite *repoTestSuite) TestUserList() {
 	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `users`").
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	users, err := suite.repo.UserList(ctx)
 	suite.Require().NoError(err)
 	for _, u := range exceptResources {
@@ -116,7 +116,7 @@ func (suite *repoTestSuite) TestCreateStore() {
 	suite.sqlMock.ExpectExec("INSERT INTO `stores`").
 		WillReturnResult(sqlmock.NewResult(nextID, 1))
 
-	// excute function
+	// execute function
 	var resource = model.Store{
 		GroupName: "mock group",
 	}
@@ -157,7 +157,7 @@ func (suite *repoTestSuite) TestGetStore() {
 		WithArgs(resource.ID).
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	store, err := suite.repo.GetStore(ctx, resource.ID)
 	suite.Require().NoError(err)
 	suite.Require().Exactly(resource, store)
@@ -183,7 +183,7 @@ func (suite *repoTestSuite) TestStoreList() {
 	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `stores`").
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	resourceList, err := suite.repo.StoreList(ctx)
 	suite.Require().NoError(err)
 	for _, r := range exceptResources {
@@ -211,7 +211,7 @@ func (suite *repoTestSuite) TestBranchStoreList() {
 	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `branch_stores`").
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	resourceList, err := suite.repo.BranchStoreList(ctx, storeID)
 	suite.Require().NoError(err)
 	for _, r := range exceptResources {
@@ -231,7 +231,7 @@ func (suite *repoTestSuite) TestCreateBranchStore() {
 	suite.sqlMock.ExpectExec("INSERT INTO `branch_stores`").
 		WillReturnResult(sqlmock.NewResult(nextID, 1))
 
-	// excute function
+	// execute function
 	var resource = model.BranchStore{
 		Name:         "mock",
 		StoreGroupID: 1,
@@ -258,7 +258,7 @@ func (suite *repoTestSuite) TestCreateOrder() {
 	suite.sqlMock.ExpectExec("INSERT INTO `orders`").
 		WillReturnResult(sqlmock.NewResult(nextID, 1))
 
-	// excute function
+	// execute function
 	var resource = model.Order{
 		CreatorID: "mock",
 		GroupID:   "groupID",
@@ -288,7 +288,7 @@ func (suite *repoTestSuite) TestGetOrder() {
 		WithArgs(resource.ID).
 		WillReturnRows(row)
 
-	// excute function
+	// execute function
 	store, err := suite.repo.GetOrder(ctx, resource.ID)
 	suite.Require().NoError(err)
 	suite.Require().Exactly(resource, store)
@@ -314,7 +314,7 @@ func (suite *repoTestSuite) TestGetGroupOrder() {
 	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders`(.*)").
 		WillReturnRows(row)
 
-	// excute function
+	// execute function
 	store, err := suite.repo.GetGroupOrder(ctx, resource.GroupID)
 	suite.Require().NoError(err)
 	suite.Require().Exactly(resource, store)
@@ -340,7 +340,7 @@ func (suite *repoTestSuite) TestOrderList() {
 	suite.sqlMock.ExpectQuery("SELECT (.+) FROM `orders`").
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	params := model.OrderParams{
 		//
 	}
@@ -363,7 +363,7 @@ func (suite *repoTestSuite) TestDeleteOrder() {
 	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE id = ?(.*)").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	// excute function
+	// execute function
 	err := suite.repo.DeleteOrder(ctx, resourceID)
 	suite.Require().NoError(err)
 
@@ -384,7 +384,7 @@ func (suite *repoTestSuite) TestUpdateOrder() {
 	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE group_id = ?(.*)").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	// excute function
+	// execute function
 	_, err := suite.repo.UpdateOrder(ctx, resource)
 	suite.Require().NoError(err)
 
@@ -412,7 +412,7 @@ func (suite *repoTestSuite) TestFinishOrder() {
 	suite.sqlMock.ExpectExec("UPDATE `orders` SET (.*) WHERE group_id = ?(.*)").
 		WillReturnResult(sqlmock.NewResult(1, 1))
 
-	// excute function
+	// execute function
 	_, err := suite.repo.FinishOrder(ctx, resource.GroupID)
 	suite.Require().NoError(err)
 
@@ -446,7 +446,7 @@ func (suite *repoTestSuite) TestGetMenuList() {
 		WithArgs(branchStore.StoreGroupID).
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	menuResult, err := suite.repo.GetMenuList(ctx, branchStore.ID)
 	suite.Require().NoError(err)
 	suite.Require().Exactly(menuList, menuResult)
@@ -481,7 +481,7 @@ func (suite *repoTestSuite) TestGetExtraList() {
 		WithArgs(branchStore.StoreGroupID).
 		WillReturnRows(rows)
 
-	// excute function
+	// execute function
 	extraResult, err := suite.repo.GetExtraList(ctx, branchStore.ID)
 	suite.Require().NoError(err)
 	suite.Require().Exactly(extraList, extraResult)

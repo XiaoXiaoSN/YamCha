@@ -443,7 +443,7 @@ func (app *YamchaLineBot) quickReplyButton(replyToken, text string) error {
 	return nil
 }
 
-// TODO: buttom
+// TODO: button
 func (app *YamchaLineBot) replyImageButton(replyToken, text string) error {
 	imageURL := "https://www.edureka.co/blog/wp-content/uploads/2018/09/Golang-Logo-Golang-Tutorial-Edureka.jpg"
 	template := linebot.NewButtonsTemplate(

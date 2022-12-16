@@ -27,7 +27,7 @@ type Server struct {
 	Port int `yaml:"port" env:"PORT" default:"18080"`
 }
 
-// DBConfig define the database connection infomation
+// DBConfig define the database connection inform｀tion
 type DBConfig struct {
 	ConnectDSN string `yaml:"dsn" env:"MYSQL_DSN"`
 
