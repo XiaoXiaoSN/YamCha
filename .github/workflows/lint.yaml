@@ -1,0 +1,36 @@
+name: Lint
+
+on:
+  pull_request:
+
+jobs:
+  commit:
+    name: Lint commit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run commitlint
+        uses: wagoid/commitlint-github-action@v5.2.2
+        with:
+          firstParent: false
+
+  codespell:
+    name: Codespell
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get git commit message
+        if: github.event_name == 'pull_request'
+        run: |
+          git log --oneline origin/$GITHUB_BASE_REF..HEAD^1 | tee commit-message.txt
+
+      - uses: codespell-project/codespell-problem-matcher@v1
+
+      - name: Codespell
+        uses: codespell-project/actions-codespell@master
